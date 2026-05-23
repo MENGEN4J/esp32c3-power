@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相关优秀开源项目参考 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link active" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>相关优秀开源项目参考</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#一、ble-骑行功率计类">一、BLE 骑行功率计类</a><a href="#1.1-gsoros-espm-—-最完整的-esp32-骑行功率计">1.1 gsoros/ESPM — 最完整的 ESP32 骑行功率计</a><a href="#1.2-kochcodes-esp32-ble-cyclingpowermeter-—-已验证兼容性的功率计">1.2 kochcodes/ESP32_BLE_CyclingPowerMeter — 已验证兼容性的功率计</a><a href="#1.3-wie-niet-blecyclepower-spinningbike-—-动感单车功率计">1.3 wie-niet/BLECyclePower-SpinningBike — 动感单车功率计</a><a href="#1.4-elmaxow-skills-github-pages-—-micropython-功率计">1.4 ElMaxow/skills-github-pages — MicroPython 功率计</a><a href="#1.5-johanwieslander-esp32-bike-powermeter-—-可调功率-踏频的模拟功率计">1.5 JohanWieslander/ESP32-Bike-Powermeter — 可调功率/踏频的模拟功率计</a><a href="#二、ftms-健身机服务类-进阶方向">二、FTMS 健身机服务类（进阶方向）</a><a href="#2.1-doudar-smartspin2k-—-最成熟的-esp32-骑行智能训练器">2.1 doudar/SmartSpin2k — 最成熟的 ESP32 骑行智能训练器</a><a href="#2.2-kswiorek-ble-ftms-—-diy-智能训练器">2.2 kswiorek/ble-ftms — DIY 智能训练器</a><a href="#2.3-eiffelpeter-esp32-ftms-indoor-bike-—-简洁的-ftms-实现">2.3 eiffelpeter/esp32_ftms_indoor_bike — 简洁的 FTMS 实现</a><a href="#三、wifi-配网-captive-portal-类">三、WiFi 配网 / Captive Portal 类</a><a href="#3.1-tonyp7-esp32-wifi-manager-—-最成熟的-esp32-wifi-管理器">3.1 tonyp7/esp32-wifi-manager — 最成熟的 ESP32 WiFi 管理器</a><a href="#3.2-wolfofnox-esp32-captive-wifi-manager-—-esp-idf-captive-portal">3.2 wolfofnox/esp32-captive-wifi-manager — ESP-IDF Captive Portal</a><a href="#3.3-sutiana-wificonfigmanager-—-arduino-esp32-wifi-配置管理器">3.3 sutiana/WiFiConfigManager — Arduino ESP32 WiFi 配置管理器</a><a href="#四、micropython-ble-最佳实践类">四、MicroPython BLE 最佳实践类</a><a href="#4.1-ekspla-micropython-aioble-examples-—-最全的-micropython-aioble-示例">4.1 ekspla/micropython_aioble_examples — 最全的 MicroPython aioble 示例</a><a href="#4.2-randomnerdtutorials-—-micropython-ble-入门教程">4.2 RandomNerdTutorials — MicroPython BLE 入门教程</a><a href="#五、综合对比">五、综合对比</a></div>
+<article class="content"><h1 id="相关优秀开源项目参考">相关优秀开源项目参考</h1>
+<p>搜集与 BikePower 项目（ESP32-C3 + MicroPython，BLE Cycling Power + Heart Rate 双服务，WiFi 配网，按钮交互）相关的优秀开源项目，按功能维度分类，分析每个项目的借鉴价值。</p>
+<p>---</p>
+<h2 id="一、ble-骑行功率计类">一、BLE 骑行功率计类</h2>
+<h3 id="1.1-gsoros-espm-—-最完整的-esp32-骑行功率计">1.1 gsoros/ESPM — 最完整的 ESP32 骑行功率计</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/gsoros/ESPM</li>
+<li><strong>语言</strong>: C++ (PlatformIO)</li>
+<li><strong>硬件</strong>: ESP32 + HX711 应变片 + MPU9250/MPU6500</li>
+<li><strong>活跃度</strong>: 167 commits</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>真实传感器数据融合</strong>: 使用 HX711（称重传感器）+ MPU6500（IMU）计算真实功率，而非模拟值。如果未来想从&quot;模拟器&quot;升级为&quot;真实功率计&quot;，这是最佳参考</li>
+<li><strong>Crank 数据格式</strong>: 完整的 Cycling Power Measurement 特征实现，包含 pedal power balance、accumulated torque 等可选字段</li>
+<li><strong>校准流程</strong>: 自动零偏校准 + 手动校准，比本项目当前只有模拟数据更专业</li>
+<li><strong>分区表设计</strong>: <code>partitions.csv</code> 展示了如何为 OTA 和 LittleFS 分配 Flash 空间</li>
+</ul>
+<p><strong>与本项目差异</strong>: C++ 而非 MicroPython，但 BLE GATT 协议层的设计思路完全通用。</p>
+<h3 id="1.2-kochcodes-esp32-ble-cyclingpowermeter-—-已验证兼容性的功率计">1.2 kochcodes/ESP32_BLE_CyclingPowerMeter — 已验证兼容性的功率计</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/kochcodes/ESP32_BLE_CyclingPowerMeter</li>
+<li><strong>语言</strong>: C++ (PlatformIO)</li>
+<li><strong>验证</strong>: Zwift (iPhone/iPad/Mac) + Garmin Edge 130</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>Zwift 兼容性</strong>: 已在主流骑行 App 上验证通过，可以学习其广播数据格式和 MTU 设置</li>
+<li><strong>Crank Revolution Data</strong>: 完整的曲柄转数 + 时间戳实现，这是 Zwift 识别功率计的关键字段</li>
+<li><strong>简洁的 BLE 服务注册</strong>: 代码量小，适合快速理解 Cycling Power Service 的最小实现</li>
+</ul>
+<h3 id="1.3-wie-niet-blecyclepower-spinningbike-—-动感单车功率计">1.3 wie-niet/BLECyclePower-SpinningBike — 动感单车功率计</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/wie-niet/BLECyclePower-SpinningBike</li>
+<li><strong>语言</strong>: Arduino C++</li>
+<li><strong>特色</strong>: 轮传感器 + 近似功率计算 + 深度睡眠</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>Deep Sleep 省电模式</strong>: 空闲 180 秒后自动进入深度睡眠，传感器变化唤醒。本项目目前没有省电逻辑，这是很好的补充方向</li>
+<li><strong>近似功率计算算法</strong>: 基于每圈固定能量消耗估算功率，比纯随机模拟更真实</li>
+<li><strong>LED 状态指示</strong>: BLE 扫描时闪烁、配对时常亮，与本项目 LED 状态机设计思路一致</li>
+</ul>
+<h3 id="1.4-elmaxow-skills-github-pages-—-micropython-功率计">1.4 ElMaxow/skills-github-pages — MicroPython 功率计</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/ElMaxow/skills-github-pages</li>
+<li><strong>语言</strong>: <strong>MicroPython</strong>（与本项目相同）</li>
+<li><strong>硬件</strong>: ESP32 + HX711 + MPU6500</li>
+<li><strong>特色</strong>: 使用 <code>com.py</code> 模块发送 BLE 数据到 Garmin</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>MicroPython BLE 实现</strong>: 这是少数使用 MicroPython 实现骑行功率计的项目，代码结构可直接参考</li>
+<li><strong>com.py 模块化设计</strong>: BLE 通信独立为模块，与本项目 <code>ble_service.py</code> 的设计理念一致</li>
+<li><strong>Garmin 兼容性</strong>: 已验证与 Garmin 设备的连接</li>
+</ul>
+<h3 id="1.5-johanwieslander-esp32-bike-powermeter-—-可调功率-踏频的模拟功率计">1.5 JohanWieslander/ESP32-Bike-Powermeter — 可调功率/踏频的模拟功率计</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/JohanWieslander/ESP32-Bike-Powermeter</li>
+<li><strong>语言</strong>: C++ (PlatformIO)</li>
+<li><strong>特色</strong>: 电位器控制功率和踏频</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>电位器控制</strong>: 使用 10K 电位器连接 GPIO34（功率）和 GPIO39（踏频），提供物理旋钮调节体验</li>
+<li><strong>FakeBikePowerMeter.ino</strong>: 单文件实现，简洁易懂，适合快速验证 BLE Cycling Power Service 的广播格式</li>
+</ul>
+<p>---</p>
+<h2 id="二、ftms-健身机服务类-进阶方向">二、FTMS 健身机服务类（进阶方向）</h2>
+<h3 id="2.1-doudar-smartspin2k-—-最成熟的-esp32-骑行智能训练器">2.1 doudar/SmartSpin2k — 最成熟的 ESP32 骑行智能训练器</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/doudar/SmartSpin2k</li>
+<li><strong>语言</strong>: C++ (Arduino/ESP-IDF)</li>
+<li><strong>活跃度</strong>: 2676 commits，149 tags，非常活跃</li>
+<li><strong>功能</strong>: BLE FTMS Server + Client + ERG 模式 + WiFi OTA + Web 配置</li>
+</ul>
+<p><strong>这是本项目最重要的参考项目，可借鉴点极多：</strong></p>
+<ul>
+<li><strong>FTMS 协议完整实现</strong>: Fitness Machine Service (UUID 0x1826) 包含 Control Point、Indoor Bike Data、Training Status 等 12+ 个 Characteristic，这是 Cycling Power Service 的进阶版</li>
+<li><strong>ERG 模式（目标功率闭环控制）</strong>: PID 算法动态调节阻力，保持目标功率。如果本项目未来想做&quot;智能训练模式&quot;，这是核心参考</li>
+<li><strong>BLE 多设备复用</strong>: 同时作为 BLE Server（广播 FTMS）和 Client（接收 HRM/功率计数据），然后合并重播</li>
+<li><strong>WiFi Web 配置界面</strong>: 完整的 Web 配置 + OTA 固件更新，比本项目更成熟</li>
+<li><strong>Power Table 映射</strong>: 档位→阻力值的查找表（LUT），支持用户自定义曲线</li>
+<li><strong>Zwift/TrainerRoad/Kinomap 兼容性</strong>: 已验证与所有主流骑行 App 的兼容性，包括 Android Zwift 的特殊处理</li>
+<li><strong>LittleFS 配置持久化</strong>: 使用 LittleFS 而非 SPIFFS，更可靠</li>
+<li><strong>mDNS 服务发现</strong>: 支持 OpenBikeControl 等第三方控制器</li>
+</ul>
+<p><strong>与本项目对比</strong>: SmartSpin2k 是 C++ 实现，功能远超本项目，但其架构设计（BLE 服务注册、WiFi 管理、配置持久化、ERG 控制）的思路可以直接借鉴到 MicroPython 版本。</p>
+<h3 id="2.2-kswiorek-ble-ftms-—-diy-智能训练器">2.2 kswiorek/ble-ftms — DIY 智能训练器</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/kswiorek/ble-ftms</li>
+<li><strong>语言</strong>: C++ (ESP-IDF)</li>
+<li><strong>特色</strong>: 完整 FTMS + 步进电机阻力控制 + 12864 LCD</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>FTMS Control Point 状态机</strong>: Start/Stop/Reset/Set Target Power 等 17 种命令的完整实现</li>
+<li><strong>双 ESP32 协同</strong>: 采集节点 + 控制节点分离，解决 BLE 和传感器采样争抢 CPU 的问题</li>
+<li><strong>SD 卡训练计划</strong>: CSV 格式的训练脚本解释器，支持预设训练课程</li>
+</ul>
+<h3 id="2.3-eiffelpeter-esp32-ftms-indoor-bike-—-简洁的-ftms-实现">2.3 eiffelpeter/esp32_ftms_indoor_bike — 简洁的 FTMS 实现</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/eiffelpeter/esp32_ftms_indoor_bike</li>
+<li><strong>语言</strong>: Arduino C++</li>
+<li><strong>特色</strong>: 单文件 751 行，含 Fake Data 模式</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>Fake Data 模式</strong>: <code>#define FAKE_DATA 1</code> 开关，与本项目模拟数据的设计完全一致</li>
+<li><strong>FTMS 最小实现</strong>: 代码简洁，适合理解 FTMS 的核心逻辑</li>
+<li><strong>Kinomap 兼容</strong>: 已验证与 Kinomap 的连接</li>
+</ul>
+<p>---</p>
+<h2 id="三、wifi-配网-captive-portal-类">三、WiFi 配网 / Captive Portal 类</h2>
+<h3 id="3.1-tonyp7-esp32-wifi-manager-—-最成熟的-esp32-wifi-管理器">3.1 tonyp7/esp32-wifi-manager — 最成熟的 ESP32 WiFi 管理器</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/tonyp7/esp32-wifi-manager</li>
+<li><strong>语言</strong>: C (ESP-IDF)</li>
+<li><strong>活跃度</strong>: 282 commits，12 tags</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>WiFi 扫描 + AP 自动切换</strong>: 启动时尝试连接已保存网络，失败则自动开启 AP 模式</li>
+<li><strong>DNS 劫持</strong>: 所有 HTTP 请求重定向到配网页面（Captive Portal）</li>
+<li><strong>自动关闭 AP</strong>: 连接成功后 1 分钟自动关闭 AP，与本项目 <code>WIFI_SHUTDOWN_MS</code> 设计一致</li>
+<li><strong>NVS 持久化</strong>: WiFi 凭证存储在 NVS（非易失性存储），比文件系统更可靠</li>
+</ul>
+<h3 id="3.2-wolfofnox-esp32-captive-wifi-manager-—-esp-idf-captive-portal">3.2 wolfofnox/esp32-captive-wifi-manager — ESP-IDF Captive Portal</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/wolfofnox/esp32-captive-wifi-manager</li>
+<li><strong>语言</strong>: C (ESP-IDF)</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>SK6812 LED 状态指示</strong>: 用 RGB LED 显示不同连接状态（呼吸灯、快闪等），比本项目单色 LED 更直观</li>
+<li><strong>多认证模式支持</strong>: Open + WPA2-Personal</li>
+<li><strong>mDNS 支持</strong>: 通过 <code>http://device.local</code> 访问配网页面</li>
+</ul>
+<h3 id="3.3-sutiana-wificonfigmanager-—-arduino-esp32-wifi-配置管理器">3.3 sutiana/WiFiConfigManager — Arduino ESP32 WiFi 配置管理器</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/sutiana/WiFiConfigManager</li>
+<li><strong>语言</strong>: Arduino C++</li>
+<li><strong>特色</strong>: 非阻塞 Web 配置 + 双核独立运行</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>非阻塞设计</strong>: WiFi 连接和 Web 服务器逻辑运行在独立 FreeRTOS 任务（Core 1），主循环（Core 0）不受影响</li>
+<li><strong>BOOT 按钮触发配网</strong>: 长按 BOOT 按钮强制进入配置模式，与本项目长按按钮进入配网的设计一致</li>
+<li><strong>STA/AP 双模式切换</strong>: 可在 Station 和 AP 模式间切换</li>
+</ul>
+<p>---</p>
+<h2 id="四、micropython-ble-最佳实践类">四、MicroPython BLE 最佳实践类</h2>
+<h3 id="4.1-ekspla-micropython-aioble-examples-—-最全的-micropython-aioble-示例">4.1 ekspla/micropython_aioble_examples — 最全的 MicroPython aioble 示例</h3>
+<ul>
+<li><strong>仓库</strong>: https://github.com/ekspla/micropython_aioble_examples</li>
+<li><strong>语言</strong>: MicroPython (aioble)</li>
+<li><strong>活跃度</strong>: 121 commits，持续更新</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>aioble 异步 BLE 框架</strong>: 使用 <code>asyncio</code> + <code>aioble</code> 替代原生 <code>bluetooth.BLE</code>，代码更清晰、更易维护</li>
+<li><strong>多连接示例</strong>: <code>conn_multiple.py</code> 展示了同时连接多个 BLE 设备的方法</li>
+<li><strong>心率读取</strong>: <code>hr_read.py</code> 展示了如何作为 Central 读取标准 HR Service (0x180D)</li>
+<li><strong>NUS Modem</strong>: 完整的 Nordic UART Service 实现，包含 Server 和 Client</li>
+</ul>
+<p><strong>注意</strong>: 本项目使用原生 <code>bluetooth.BLE</code> + IRQ 回调模式，而 aioble 使用 asyncio 协程。在 ESP32-C3 的内存限制下，aioble 的 asyncio 开销需要评估。但 aioble 的代码结构更清晰，值得学习其设计模式。</p>
+<h3 id="4.2-randomnerdtutorials-—-micropython-ble-入门教程">4.2 RandomNerdTutorials — MicroPython BLE 入门教程</h3>
+<ul>
+<li><strong>链接</strong>: https://randomnerdtutorials.com/micropython-esp32-bluetooth-low-energy-ble/</li>
+</ul>
+<p><strong>可借鉴点：</strong></p>
+<ul>
+<li><strong>aioble + bluetooth 混合使用</strong>: 展示了如何用 <code>aioble.Characteristic</code> 定义服务，同时用 <code>bluetooth.BLE</code> 做底层操作</li>
+<li><strong>传感器 + LED 双特征</strong>: 一个服务包含 read/notify 特征（传感器数据）和 write 特征（LED 控制），与本项目 Power + HR 双服务的设计类似</li>
+</ul>
+<p>---</p>
+<h2 id="五、综合对比">五、综合对比</h2>
+<table>
+<thead><tr>
+<th>项目</th>
+<th>相关度</th>
+<th>技术栈</th>
+<th>最大借鉴价值</th>
+</tr></thead><tbody>
+<tr>
+<td>SmartSpin2k</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>C++</td>
+<td>FTMS 协议、ERG 模式、BLE 多设备复用、Web 配置</td>
+</tr>
+<tr>
+<td>ESPM (gsoros)</td>
+<td>⭐⭐⭐⭐</td>
+<td>C++</td>
+<td>真实功率计算、传感器融合、校准流程</td>
+</tr>
+<tr>
+<td>micropython_aioble_examples</td>
+<td>⭐⭐⭐⭐</td>
+<td>MicroPython</td>
+<td>aioble 异步框架、多连接、HR 读取</td>
+</tr>
+<tr>
+<td>ElMaxow (MicroPython)</td>
+<td>⭐⭐⭐⭐</td>
+<td>MicroPython</td>
+<td>唯一的 MicroPython 功率计实现，直接参考</td>
+</tr>
+<tr>
+<td>ble-ftms (kswiorek)</td>
+<td>⭐⭐⭐</td>
+<td>C++</td>
+<td>FTMS Control Point 状态机、训练计划</td>
+</tr>
+<tr>
+<td>esp32_ftms_indoor_bike</td>
+<td>⭐⭐⭐</td>
+<td>Arduino C++</td>
+<td>FTMS 最小实现 + Fake Data 模式</td>
+</tr>
+<tr>
+<td>ESP32_BLE_CyclingPowerMeter</td>
+<td>⭐⭐⭐</td>
+<td>C++</td>
+<td>Zwift/Garmin 兼容性验证</td>
+</tr>
+<tr>
+<td>BLECyclePower-SpinningBike</td>
+<td>⭐⭐</td>
+<td>Arduino C++</td>
+<td>Deep Sleep 省电、近似功率算法</td>
+</tr>
+<tr>
+<td>esp32-wifi-manager</td>
+<td>⭐⭐</td>
+<td>C</td>
+<td>Captive Portal、自动 AP 切换</td>
+</tr>
+<tr>
+<td>Espressif RAM 优化文档</td>
+<td>⭐⭐⭐</td>
+<td>通用</td>
+<td>ESP32-C3 内存优化策略</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="六、重点学习方向">六、重点学习方向</h2>
+<h3 id="6.1-从-cycling-power-升级到-ftms">6.1 从 Cycling Power 升级到 FTMS</h3>
+<p>参考 SmartSpin2k 和 eiffelpeter 的实现，FTMS 是更完整的健身设备协议，支持阻力控制、训练状态等。</p>
+<p>FTMS 关键 Characteristic：</p>
+<table>
+<thead><tr>
+<th>UUID</th>
+<th>名称</th>
+<th>属性</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>0x2ACC</td>
+<td>Fitness Machine Feature</td>
+<td>Read</td>
+<td>支持的功能位图</td>
+</tr>
+<tr>
+<td>0x2AD2</td>
+<td>Indoor Bike Data</td>
+<td>Notify</td>
+<td>实时数据（速度、踏频、功率、心率）</td>
+</tr>
+<tr>
+<td>0x2AD3</td>
+<td>Training Status</td>
+<td>Read/Notify</td>
+<td>训练状态</td>
+</tr>
+<tr>
+<td>0x2AD6</td>
+<td>Supported Resistance Level Range</td>
+<td>Read</td>
+<td>支持的阻力范围</td>
+</tr>
+<tr>
+<td>0x2AD9</td>
+<td>Fitness Machine Control Point</td>
+<td>Write/Indicate</td>
+<td>控制命令</td>
+</tr>
+<tr>
+<td>0x2ADA</td>
+<td>Fitness Machine Status</td>
+<td>Notify</td>
+<td>设备状态</td>
+</tr>
+</tbody></table>
+<h3 id="6.2-erg-模式-目标功率闭环控制">6.2 ERG 模式（目标功率闭环控制）</h3>
+<p>参考 SmartSpin2k 的 PID 实现，让训练更智能：</p>
+<ul>
+<li>用户设定目标功率（如 200W）</li>
+<li>控制器以 200ms 为周期读取当前功率反馈</li>
+<li>通过增量式 PID 算法动态调节阻力</li>
+<li>解决非线性摩擦建模、响应延迟补偿等问题</li>
+</ul>
+<h3 id="6.3-deep-sleep-省电">6.3 Deep Sleep 省电</h3>
+<p>参考 BLECyclePower-SpinningBike：</p>
+<ul>
+<li>空闲 180 秒后自动进入深度睡眠</li>
+<li>GPIO 传感器变化唤醒</li>
+<li><code>machine.deepsleep()</code> 实现</li>
+</ul>
+<h3 id="6.4-aioble-框架评估">6.4 aioble 框架评估</h3>
+<p>参考 ekspla 的示例，评估是否值得从 IRQ 回调迁移到 asyncio 模式：</p>
+<table>
+<thead><tr>
+<th>维度</th>
+<th>原生 bluetooth.BLE</th>
+<th>aioble</th>
+</tr></thead><tbody>
+<tr>
+<td>代码清晰度</td>
+<td>低（IRQ 回调嵌套）</td>
+<td>高（async/await）</td>
+</tr>
+<tr>
+<td>内存开销</td>
+<td>低</td>
+<td>中（asyncio 运行时）</td>
+</tr>
+<tr>
+<td>实时性</td>
+<td>高（IRQ 直接响应）</td>
+<td>中（事件循环调度）</td>
+</tr>
+<tr>
+<td>维护性</td>
+<td>差</td>
+<td>好</td>
+</tr>
+<tr>
+<td>ESP32-C3 适配</td>
+<td>已验证</td>
+<td>需评估内存</td>
+</tr>
+</tbody></table>
+<h3 id="6.5-真实传感器支持">6.5 真实传感器支持</h3>
+<p>参考 ESPM 和 ElMaxow，为未来接入 HX711/MPU6500 做准备：</p>
+<ul>
+<li>HX711: 24 位 ADC，测量应变片信号，计算扭矩→功率</li>
+<li>MPU6500: 6 轴 IMU，测量曲柄角速度→踏频</li>
+<li>校准流程: 零偏校准 + 灵敏度校准 + 温度补偿</li>
+</ul>
+<p>---</p>
+<h2 id="七、esp32-c3-内存优化参考">七、ESP32-C3 内存优化参考</h2>
+<p>来源: <a href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/ram-usage.html">Espressif 官方文档 - Minimizing RAM Usage</a></p>
+<p>关键优化点：</p>
+<table>
+<thead><tr>
+<th>优化项</th>
+<th>节省内存</th>
+<th>对本项目的影响</th>
+</tr></thead><tbody>
+<tr>
+<td>NimBLE 替代 Bluedroid</td>
+<td>~50KB</td>
+<td>已采用 ✅</td>
+</tr>
+<tr>
+<td>关闭 WiFi IRAM speed optimization</td>
+<td>~25KB</td>
+<td>WiFi 吞吐量降 10-15%</td>
+</tr>
+<tr>
+<td>关闭 LWIP IRAM optimization</td>
+<td>~12KB</td>
+<td>TCP 延迟增加 3-5ms</td>
+</tr>
+<tr>
+<td><code>CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY</code></td>
+<td>动态释放</td>
+<td>BLE 关闭后回收内存</td>
+</tr>
+<tr>
+<td>预分配 bytearray 缓冲区</td>
+<td>避免碎片</td>
+<td>已采用 ✅</td>
+</tr>
+<tr>
+<td><code>%</code> 格式化替代 f-string</td>
+<td>减少临时对象</td>
+<td>已采用 ✅</td>
+</tr>
+</tbody></table></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

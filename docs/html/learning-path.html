@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BikePower 课程学习路线 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link active" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>BikePower 课程学习路线</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#学习目标">学习目标</a><a href="#课程路线">课程路线</a><a href="#第-1-课-项目全貌与使用流程">第 1 课：项目全貌与使用流程</a><a href="#第-2-课-esp32-c3-硬件约束">第 2 课：ESP32-C3 硬件约束</a><a href="#第-3-课-micropython-工程结构">第 3 课：MicroPython 工程结构</a><a href="#第-4-课-ble-功率计服务">第 4 课：BLE 功率计服务</a><a href="#第-5-课-按钮与-led-状态机">第 5 课：按钮与 LED 状态机</a><a href="#第-6-课-wifi-配网与-web-服务">第 6 课：WiFi 配网与 Web 服务</a><a href="#第-7-课-ota-文件级更新">第 7 课：OTA 文件级更新</a><a href="#第-8-课-测试、部署与发版">第 8 课：测试、部署与发版</a><a href="#第-9-课-ai-coding-工程化">第 9 课：AI Coding 工程化</a><a href="#推荐补充资料">推荐补充资料</a><a href="#建议新增的课程材料">建议新增的课程材料</a></div>
+<article class="content"><h1 id="bikepower-课程学习路线">BikePower 课程学习路线</h1>
+<blockquote>这份文档把项目资料整理成可学习、可授课的路线。目标不是替代用户手册，而是帮助开发者按主题理解 ESP32-C3、MicroPython、BLE、WiFi 配网、OTA 和 AI 工程化。</blockquote>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本路线后，应能理解：</p>
+<ul>
+<li>ESP32-C3 的硬件限制，尤其是 WiFi/BLE 互斥和内存约束</li>
+<li>MicroPython 在小内存设备上的工程化写法</li>
+<li>BLE Cycling Power / Heart Rate 服务的基本数据结构</li>
+<li>WiFi AP 配网、Web 表单、Socket 服务端的实现思路</li>
+<li>文件级 OTA、CRC 校验、原子替换和安全回滚</li>
+<li>如何用规格文档、规则文档和变更文档约束 AI Coding</li>
+</ul>
+<h2 id="课程路线">课程路线</h2>
+<h3 id="第-1-课-项目全貌与使用流程">第 1 课：项目全貌与使用流程</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="user-manual.html">user-manual.md</a></li>
+<li><a href="README.html">README.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>设备能做什么</li>
+<li>蓝牙连接、按钮操作、WiFi 配网、OTA 更新的用户路径</li>
+<li>哪些功能是“用户可感知行为”，哪些是“内部实现”</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>按用户手册画出完整使用流程图</li>
+<li>列出 BLE、WiFi、OTA 三条主链路的入口和退出条件</li>
+</ul>
+<h3 id="第-2-课-esp32-c3-硬件约束">第 2 课：ESP32-C3 硬件约束</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="esp32c3-board-guide.html">esp32c3-board-guide.md</a></li>
+<li><a href="esp32c3-optimization.html">esp32c3-optimization.md</a></li>
+<li><a href="hardware_constraints.html">.trae/rules/hardware_constraints.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>GPIO9 按钮、GPIO12 LED 的使用约束</li>
+<li>WiFi 与 BLE 共享 RF 的限制</li>
+<li>MicroPython 堆内存、Socket 数量和无 PSRAM 限制</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>解释为什么本项目采用 WiFi/BLE 互斥，而不是共存</li>
+<li>给出“进入配网模式必须先关 BLE”的状态机</li>
+</ul>
+<h3 id="第-3-课-micropython-工程结构">第 3 课：MicroPython 工程结构</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="firmware-build.html">firmware-build.md</a></li>
+<li><a href="code_style.html">.trae/rules/code_style.md</a></li>
+<li><a href="spec-coding-insights.html">spec-coding-insights.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>MicroPython 与 CPython 的差异</li>
+<li><code>const()</code>、预分配缓冲区、<code>gc.collect()</code>、轻量日志</li>
+<li>模块级 docstring、配置集中化、禁止硬编码</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>找出项目中所有预分配缓冲区</li>
+<li>说明为什么业务代码不能使用 <code>requests</code>、<code>asyncio</code>、<code>threading</code></li>
+</ul>
+<h3 id="第-4-课-ble-功率计服务">第 4 课：BLE 功率计服务</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="ble-service.html">../specs/ble-service.md</a></li>
+<li><a href="open-source-references.html">open-source-references.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>Cycling Power Service 与 Heart Rate Service</li>
+<li>BLE 广播、连接、断开、通知</li>
+<li>8 字节功率数据包和踏频计算</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>拆解一次 BLE 通知的字节结构</li>
+<li>说明为什么通知缓冲区要复用 <code>bytearray</code></li>
+</ul>
+<h3 id="第-5-课-按钮与-led-状态机">第 5 课：按钮与 LED 状态机</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="button-handler.html">../specs/button-handler.md</a></li>
+<li><a href="user-manual.html">user-manual.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>短按、中按、长按、二次确认</li>
+<li>LED 慢闪、常亮、快闪、熄灭、OTA 双闪</li>
+<li>用户操作如何转化为系统状态变化</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>用表格写出按钮事件和 LED 状态迁移</li>
+<li>解释为什么长按不能直接进入 WiFi 配网</li>
+</ul>
+<h3 id="第-6-课-wifi-配网与-web-服务">第 6 课：WiFi 配网与 Web 服务</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="wifi-manager.html">../specs/wifi-manager.md</a></li>
+<li><a href="robot-deploy.html">robot-deploy.md</a></li>
+<li><a href="esp32c3-optimization.html">esp32c3-optimization.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>AP 热点、STA 连接、Web 表单和 JSON API</li>
+<li>Socket <code>listen(3)</code> 与连接关闭</li>
+<li>WiFi 自动关闭和重启恢复 BLE</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>画出 <code>start()</code> 到 <code>_shutdown_wifi()</code> 的完整流程</li>
+<li>找出 Web API 中哪些接口依赖 WiFi 已配网</li>
+</ul>
+<h3 id="第-7-课-ota-文件级更新">第 7 课：OTA 文件级更新</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="ota-update-design.html">ota-update-design.md</a></li>
+<li><a href="ota-updater.html">../specs/ota-updater.md</a></li>
+<li><a href="release-template.html">release-template.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li><code>version.json</code> 字段、<code>mpy_version</code> 校验、CRC32</li>
+<li><code>.tmp</code>、<code>.bak</code>、<code>.update_pending</code> 的作用</li>
+<li>启动时 <code>__import__</code> 校验和自动回滚</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>设计一次“下载中断”的回滚流程</li>
+<li>解释为什么 OTA 版本清单应使用稳定 <code>latest</code> 入口，而不是历史 tag</li>
+</ul>
+<h3 id="第-8-课-测试、部署与发版">第 8 课：测试、部署与发版</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="firmware-build.html">firmware-build.md</a></li>
+<li><a href="robot-deploy.html">robot-deploy.md</a></li>
+<li><a href="release-template.html">release-template.md</a></li>
+<li><a href="MEMORY.html">../MEMORY.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>语法检查、编译、部署、真机验证的区别</li>
+<li><code>CHANGELOG</code> 测试报告如何记录</li>
+<li>为什么要分批提交并每批 push</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>按 <code>release-template.md</code> 填一份测试版 Release 说明</li>
+<li>为一次 Bug 修复拆分“代码提交”和“文档提交”</li>
+</ul>
+<h3 id="第-9-课-ai-coding-工程化">第 9 课：AI Coding 工程化</h3>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="spec-coding-insights.html">spec-coding-insights.md</a></li>
+<li><a href="project_rules.html">.trae/rules/project_rules.md</a></li>
+<li><a href="entropy-governance.html">.trae/rules/entropy-governance.md</a></li>
+</ul>
+<p>学习重点：</p>
+<ul>
+<li>规则层、规格层、变更层如何协同</li>
+<li><code>specs/</code> 是行为契约，<code>changes/</code> 是变更工作区</li>
+<li>Entropy 治理：文档 Drift、命名漂移、死代码、配置一致性</li>
+</ul>
+<p>实践任务：</p>
+<ul>
+<li>为一个新功能写 <code>proposal/design/tasks</code></li>
+<li>检查一次代码变更是否同步了 specs、README、CHANGELOG</li>
+</ul>
+<h2 id="推荐补充资料">推荐补充资料</h2>
+<p>项目内已有资料以实战为主，如果要做完整课程，建议补充以下主题：</p>
+<ul>
+<li><strong>MicroPython 基础课</strong>：文件系统、模块导入、异常处理、<code>machine</code>、<code>network</code>、<code>bluetooth</code></li>
+<li><strong>BLE 协议基础课</strong>：GATT、Service、Characteristic、Notify、Advertising</li>
+<li><strong>HTTP 与 Socket 基础课</strong>：HTTP 请求头、<code>Content-Length</code>、短连接、超时与资源释放</li>
+<li><strong>嵌入式可靠性课</strong>：看门狗、断电恢复、原子替换、配置损坏恢复</li>
+<li><strong>版本发布课</strong>：SemVer、CHANGELOG、Release Notes、固件附件、回滚策略</li>
+</ul>
+<h2 id="建议新增的课程材料">建议新增的课程材料</h2>
+<p>后续如果继续完善，可以新增：</p>
+<ul>
+<li><code>docs/course-micropython-basics.md</code>：MicroPython 入门与 ESP32-C3 常用模块</li>
+<li><code>docs/course-ble-cps.md</code>：BLE Cycling Power Service 数据结构详解</li>
+<li><code>docs/course-ota-reliability.md</code>：嵌入式 OTA 可靠性设计</li>
+<li><code>docs/course-ai-coding-workflow.md</code>：从规格到提交的 AI Coding 工作流</li>
+</ul>
+<p>这些文档暂不创建，避免空文档堆积；等开始实际授课或整理笔记时再补。</p></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

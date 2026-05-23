@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32-C3 MicroPython 优化技巧与最佳实践 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link active" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>ESP32-C3 MicroPython 优化技巧与最佳实践</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#1.-wifi-ble-共存机制">1. WiFi/BLE 共存机制</a><a href="#1.1-硬件限制">1.1 硬件限制</a><a href="#1.2-本项目策略">1.2 本项目策略</a><a href="#1.3-优化方向">1.3 优化方向</a><a href="#2.-内存优化">2. 内存优化</a><a href="#2.1-esp32-c3-内存布局">2.1 ESP32-C3 内存布局</a><a href="#2.2-关键优化技巧">2.2 关键优化技巧</a><a href="#2.3-内存监控">2.3 内存监控</a><a href="#3.-ble-优化">3. BLE 优化</a><a href="#3.1-nimble-vs-bluedroid">3.1 NimBLE vs Bluedroid</a><a href="#3.2-通知间隔优化">3.2 通知间隔优化</a><a href="#3.3-mtu-优化">3.3 MTU 优化</a><a href="#3.4-广播间隔">3.4 广播间隔</a><a href="#4.-wifi-优化">4. WiFi 优化</a><a href="#4.1-ap-模式内存占用">4.1 AP 模式内存占用</a><a href="#4.2-socket-最佳实践">4.2 Socket 最佳实践</a><a href="#4.3-http-响应优化">4.3 HTTP 响应优化</a><a href="#5.-线程安全">5. 线程安全</a></div>
+<article class="content"><h1 id="esp32-c3-micropython-优化技巧与最佳实践">ESP32-C3 MicroPython 优化技巧与最佳实践</h1>
+<p>基于 ESP-IDF 官方文档、MicroPython 社区讨论和实际项目经验整理。</p>
+<p>---</p>
+<h2 id="1.-wifi-ble-共存机制">1. WiFi/BLE 共存机制</h2>
+<h3 id="1.1-硬件限制">1.1 硬件限制</h3>
+<p>ESP32-C3 只有一路 RF，WiFi 和 BLE 共享射频，<strong>无法同时收发数据</strong>，采用时分复用方式。</p>
+<p>官方共存支持矩阵（ESP-IDF v5.0）：</p>
+<table>
+<thead><tr>
+<th></th>
+<th>BLE Scan</th>
+<th>BLE Advertising</th>
+<th>BLE Connecting</th>
+<th>BLE Connected</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>WiFi STA Scan</strong></td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td><strong>WiFi STA Connected</strong></td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td><strong>WiFi SOFTAP TX Beacon</strong></td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td><strong>WiFi SOFTAP Connected</strong></td>
+<td>C1</td>
+<td>C1</td>
+<td>C1</td>
+<td>C1</td>
+</tr>
+<tr>
+<td><strong>ESP-NOW RX</strong></td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Y</strong>: 支持且性能稳定</li>
+<li><strong>C1</strong>: 不能保证性能稳定</li>
+<li><strong>X</strong>: 不支持</li>
+</ul>
+<h3 id="1.2-本项目策略">1.2 本项目策略</h3>
+<p>当前项目采用<strong>互斥模式</strong>（先关 BLE 再开 WiFi AP），而非共存模式。原因：</p>
+<ol>
+<li>WiFi SOFTAP + BLE Connected 标记为 C1（不稳定）</li>
+<li>MicroPython 固件默认未启用 <code>CONFIG_ESP32_WIFI_SW_COEXIST_ENABLE</code></li>
+<li>内存不足以同时运行两个协议栈</li>
+</ol>
+<h3 id="1.3-优化方向">1.3 优化方向</h3>
+<p>如需共存模式，需自定义编译 MicroPython 固件：</p>
+<ul>
+<li>启用 <code>CONFIG_ESP32_WIFI_SW_COEXIST_ENABLE</code></li>
+<li>设置 <code>CONFIG_BT_NIMBLE_MAX_CONNECTIONS=1</code> 减少 BLE 内存占用</li>
+<li>使用 NimBLE 替代 Bluedroid（节省约 50KB RAM）</li>
+</ul>
+<p>---</p>
+<h2 id="2.-内存优化">2. 内存优化</h2>
+<h3 id="2.1-esp32-c3-内存布局">2.1 ESP32-C3 内存布局</h3>
+<table>
+<thead><tr>
+<th>区域</th>
+<th>大小</th>
+<th>用途</th>
+</tr></thead><tbody>
+<tr>
+<td>ROM</td>
+<td>384 KB</td>
+<td>启动代码、内置协议栈</td>
+</tr>
+<tr>
+<td>SRAM</td>
+<td>400 KB</td>
+<td>其中 16KB 用于 Cache</td>
+</tr>
+<tr>
+<td>RTC SRAM</td>
+<td>8 KB</td>
+<td>深度睡眠保持</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td>4 MB</td>
+<td>固件 + 文件系统</td>
+</tr>
+</tbody></table>
+<p>MicroPython 可用堆内存约 <strong>150KB</strong>（BLE 启动后约 120KB）。</p>
+<h3 id="2.2-关键优化技巧">2.2 关键优化技巧</h3>
+<h4 id="预分配缓冲区-本项目已采用">预分配缓冲区（本项目已采用）</h4>
+<pre><code class="language-python">
+self._power_buf = bytearray(8)
+self._hr_buf = bytearray(2)
+</code></pre>
+<p>避免在 BLE 通知回调中频繁创建 bytearray，减少 GC 压力。</p>
+<h4 id="gc.collect-时机">gc.collect() 时机</h4>
+<ul>
+<li>WiFi 启动前：<code>gc.collect()</code> 释放最大连续内存块</li>
+<li>大对象创建后：立即 <code>del</code> + <code>gc.collect()</code></li>
+<li>周期性调用：主循环中每 N 次迭代调用一次</li>
+</ul>
+<pre><code class="language-python">
+loop_count += 1
+if loop_count % 100 == 0:
+    gc.collect()
+</code></pre>
+<h4 id="gc.threshold-自动回收">gc.threshold() 自动回收</h4>
+<pre><code class="language-python">
+gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
+</code></pre>
+<p>设置 GC 阈值，当分配内存超过阈值时自动触发回收，避免内存碎片化。</p>
+<h4 id="避免字符串拼接">避免字符串拼接</h4>
+<pre><code class="language-python">
+# 差 - 每次拼接创建新字符串对象
+msg = &quot;power=&quot; + str(power) + &quot; cadence=&quot; + str(cadence)
+
+# 好 - 使用格式化（单次分配）
+msg = &quot;power=%d cadence=%d&quot; % (power, cadence)
+</code></pre>
+<h4 id="socket-数量限制">Socket 数量限制</h4>
+<p>ESP32-C3 无 PSRAM，最多同时打开 <strong>3-4 个 socket</strong>。本项目 Web 服务器应限制并发连接：</p>
+<pre><code class="language-python">
+self.server.listen(3)  # 而非 5
+</code></pre>
+<h3 id="2.3-内存监控">2.3 内存监控</h3>
+<pre><code class="language-python">
+import gc, micropython
+gc.collect()
+print(f&quot;free={gc.mem_free()} alloc={gc.mem_alloc()}&quot;)
+micropython.mem_info()
+</code></pre>
+<p>关键指标：</p>
+<ul>
+<li><code>max new split</code>: ESP-IDF 可用的最大连续内存块（低于 10KB 时 WiFi 可能失败）</li>
+<li><code>max free sz</code>: MicroPython 堆内最大连续块</li>
+<li><code>max blk sz</code>: 最大可分配单块大小</li>
+</ul>
+<p>---</p>
+<h2 id="3.-ble-优化">3. BLE 优化</h2>
+<h3 id="3.1-nimble-vs-bluedroid">3.1 NimBLE vs Bluedroid</h3>
+<table>
+<thead><tr>
+<th>特性</th>
+<th>Bluedroid</th>
+<th>NimBLE</th>
+</tr></thead><tbody>
+<tr>
+<td>RAM 占用</td>
+<td>~100KB</td>
+<td>~50KB</td>
+</tr>
+<tr>
+<td>初始化时间</td>
+<td>~500ms</td>
+<td>~100ms</td>
+</tr>
+<tr>
+<td>Classic BT</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>BLE 连接数</td>
+<td>多个</td>
+<td>1（默认）</td>
+</tr>
+</tbody></table>
+<p>MicroPython v1.28 默认使用 NimBLE，更适合 ESP32-C3。</p>
+<h3 id="3.2-通知间隔优化">3.2 通知间隔优化</h3>
+<pre><code class="language-python">
+self._min_notify_interval = 1000  # 1秒
+</code></pre>
+<ul>
+<li>骑行 App 通常每秒更新一次数据</li>
+<li>过快通知会导致 BLE 缓冲区溢出和连接断开</li>
+<li>建议范围：500ms - 2000ms</li>
+</ul>
+<h3 id="3.3-mtu-优化">3.3 MTU 优化</h3>
+<pre><code class="language-python">
+ble.config(mtu=69)  # 减小 MTU 降低内存占用
+</code></pre>
+<p>默认 MTU=256，对于功率计数据（8字节）过大。减小 MTU 可节省约 400 字节 RAM。</p>
+<h3 id="3.4-广播间隔">3.4 广播间隔</h3>
+<pre><code class="language-python">
+ble.gap_advertise(interval=100)  # 100ms
+</code></pre>
+<ul>
+<li>100ms：快速连接，功耗较高</li>
+<li>500ms：平衡模式</li>
+<li>1000ms：低功耗模式</li>
+</ul>
+<p>---</p>
+<h2 id="4.-wifi-优化">4. WiFi 优化</h2>
+<h3 id="4.1-ap-模式内存占用">4.1 AP 模式内存占用</h3>
+<p>WiFi AP 启动约消耗 <strong>30-40KB</strong> 堆内存，加上 socket 缓冲区可能达到 50KB。</p>
+<h3 id="4.2-socket-最佳实践">4.2 Socket 最佳实践</h3>
+<pre><code class="language-python">
+# 及时关闭不用的 socket
+conn.close()
+
+# 设置超时避免阻塞
+conn.settimeout(5)
+
+# 限制请求体大小
+data = conn.recv(512)  # 而非 recv(1024) 或更大
+</code></pre>
+<h3 id="4.3-http-响应优化">4.3 HTTP 响应优化</h3>
+<pre><code class="language-python">
+# 差 - 一次性构建整个 HTML
+html = &quot;&lt;html&gt;...&quot; + dynamic_data + &quot;...&lt;/html&gt;&quot;
+conn.send(html)
+
+# 好 - 分段发送
+conn.send(&quot;HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n&quot;)
+conn.send(static_html_part1)
+conn.send(dynamic_data)
+conn.send(static_html_part2)
+</code></pre>
+<p>---</p>
+<h2 id="5.-线程安全">5. 线程安全</h2>
+<h3 id="5.1-thread-限制">5.1 _thread 限制</h3>
+<p>MicroPython 的 <code>_thread</code> 是简化版 threading：</p>
+<ul>
+<li>无锁机制（无 <code>threading.Lock</code>）</li>
+<li>内存共享但无同步原语</li>
+<li>线程中异常不会传播到主线程</li>
+</ul>
+<h3 id="5.2-安全模式">5.2 安全模式</h3>
+<pre><code class="language-python">
+# 使用全局标志代替锁
+wifi_ready = False
+
+# 主线程
+def main_loop():
+    global wifi_ready
+    while True:
+        if wifi_ready:
+            do_something()
+        time.sleep_ms(50)
+
+# WiFi 线程
+def wifi_thread():
+    global wifi_ready
+    start_wifi()
+    wifi_ready = True
+</code></pre>
+<h3 id="5.3-避免在线程中创建对象">5.3 避免在线程中创建对象</h3>
+<p>线程中创建的 Python 对象可能导致 GC 问题。建议在主线程预分配所有需要的对象。</p>
+<p>---</p>
+<h2 id="6.-低功耗优化">6. 低功耗优化</h2>
+<h3 id="6.1-电源模式">6.1 电源模式</h3>
+<table>
+<thead><tr>
+<th>模式</th>
+<th>功耗</th>
+<th>适用场景</th>
+</tr></thead><tbody>
+<tr>
+<td>Active</td>
+<td>~15-20mA</td>
+<td>正常运行</td>
+</tr>
+<tr>
+<td>Modem-sleep</td>
+<td>~3-5mA</td>
+<td>WiFi/BLE 空闲时</td>
+</tr>
+<tr>
+<td>Light-sleep</td>
+<td>~0.5mA</td>
+<td>CPU 空闲，定时唤醒</td>
+</tr>
+<tr>
+<td>Deep-sleep</td>
+<td>~5μA</td>
+<td>长期待机</td>
+</tr>
+</tbody></table>
+<h3 id="6.2-modem-sleep-自动启用">6.2 Modem-sleep 自动启用</h3>
+<pre><code class="language-python">
+# WiFi 连接后自动进入 Modem-sleep
+wlan.config(pm=0xa11142)  # 默认省电模式
+</code></pre>
+<h3 id="6.3-ble-广播优化">6.3 BLE 广播优化</h3>
+<pre><code class="language-python">
+# 降低广播频率节省功耗
+ble.gap_advertise(interval=500)  # 500ms 而非 100ms
+</code></pre>
+<p>---</p>
+<h2 id="7.-固件自定义编译">7. 固件自定义编译</h2>
+<p>如需突破 MicroPython 预编译固件限制，可自定义编译：</p>
+<pre><code class="language-bash">
+# 克隆 MicroPython
+git clone https://github.com/micropython/micropython.git
+cd micropython/ports/esp32
+
+# 修改 sdkconfig
+make menuconfig  # 启用共存、调整内存分区等
+
+# 编译
+make BOARD=ESP32C3_GENERIC submodules
+make BOARD=ESP32C3_GENERIC
+</code></pre>
+<p>关键配置项：</p>
+<ul>
+<li><code>CONFIG_ESP32_WIFI_SW_COEXIST_ENABLE</code> - WiFi/BLE 共存</li>
+<li><code>CONFIG_BT_NIMBLE_MAX_CONNECTIONS</code> - BLE 最大连接数</li>
+<li><code>CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY</code> - BLE 动态内存分配</li>
+<li><code>CONFIG_ESP32_WIFI_STATIC_RX_BUFFER_NUM</code> - WiFi 接收缓冲区数量</li>
+</ul>
+<p>---</p>
+<h2 id="参考来源">参考来源</h2>
+<ul>
+<li><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v5.0-beta1/esp32c3/api-guides/coexist.html">ESP-IDF RF 共存文档</a></li>
+<li><a href="https://github.com/orgs/micropython/discussions/18860">MicroPython ESP32-C3 WiFi+BLE 内存讨论 #18860</a></li>
+<li><a href="https://github.com/micropython/micropython/issues/14421">MicroPython Socket 内存问题 #14421</a></li>
+<li><a href="https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32c3/api-guides/performance/ram-usage.html">ESP-IDF RAM 优化指南</a></li>
+<li><a href="https://www.pythontutorials.net/blog/gc-esp32-micropython/">MicroPython GC 最佳实践</a></li>
+</ul></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

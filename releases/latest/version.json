@@ -1,0 +1,68 @@
+{
+  "version": "2.0.1",
+  "min_version": "1.8.0",
+  "mpy_version": "v1.28",
+  "changelog": "",
+  "files": [
+    {
+      "name": "app.mpy",
+      "hash": "ed1f7165",
+      "size": 2916,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/app.mpy"
+    },
+    {
+      "name": "config.mpy",
+      "hash": "517617e3",
+      "size": 3453,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/config.mpy"
+    },
+    {
+      "name": "logger.mpy",
+      "hash": "a4970100",
+      "size": 501,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/logger.mpy"
+    },
+    {
+      "name": "utils.mpy",
+      "hash": "449b6d76",
+      "size": 178,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/utils.mpy"
+    },
+    {
+      "name": "ble_service.mpy",
+      "hash": "c8da5046",
+      "size": 6909,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/ble_service.mpy"
+    },
+    {
+      "name": "power_data.mpy",
+      "hash": "4d4e16f1",
+      "size": 6792,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/power_data.mpy"
+    },
+    {
+      "name": "wifi_manager.mpy",
+      "hash": "270a9454",
+      "size": 12524,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/wifi_manager.mpy"
+    },
+    {
+      "name": "web_pages.mpy",
+      "hash": "4cf301f5",
+      "size": 30849,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/web_pages.mpy"
+    },
+    {
+      "name": "ota_updater.mpy",
+      "hash": "ad25abf6",
+      "size": 7258,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/ota_updater.mpy"
+    },
+    {
+      "name": "event_bus.mpy",
+      "hash": "e831b670",
+      "size": 881,
+      "url": "https://gitee.com/mengen4jv/esp32-power/raw/v2.0.1/releases/ota/v2.0.1/event_bus.mpy"
+    }
+  ]
+}

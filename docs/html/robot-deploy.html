@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot 部署指南 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link active" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>Robot 部署指南</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#一键脚本">一键脚本</a><a href="#deploy.sh-执行流程">deploy.sh 执行流程</a><a href="#关键注意事项">关键注意事项</a><a href="#异常模式与修复策略">异常模式与修复策略</a><a href="#本地监控页面">本地监控页面</a><a href="#启动方式">启动方式</a><a href="#部署检查清单">部署检查清单</a></div>
+<article class="content"><h1 id="robot-部署指南">Robot 部署指南</h1>
+<blockquote>本文件供 AI 助手阅读，定义自动部署流程。项目已封装一键脚本，优先使用脚本部署。</blockquote>
+<p>---</p>
+<h2 id="一键脚本">一键脚本</h2>
+<table>
+<thead><tr>
+<th>场景</th>
+<th>脚本</th>
+<th>命令</th>
+</tr></thead><tbody>
+<tr>
+<td>代码部署</td>
+<td><code>deploy.sh</code></td>
+<td><code>bash scripts/deploy.sh</code></td>
+</tr>
+<tr>
+<td>固件烧录</td>
+<td><code>flash_firmware.sh</code></td>
+<td><code>bash scripts/flash_firmware.sh -e</code></td>
+</tr>
+<tr>
+<td>固件编译</td>
+<td><code>build_firmware.sh</code></td>
+<td><code>bash scripts/build_firmware.sh</code></td>
+</tr>
+<tr>
+<td>串口扫描</td>
+<td><code>common.sh</code></td>
+<td><code>bash scripts/common.sh scan</code></td>
+</tr>
+<tr>
+<td>跨平台入口</td>
+<td><code>bikepower.sh</code></td>
+<td><code>bash scripts/bikepower.sh deploy/flash/build/scan</code></td>
+</tr>
+</tbody></table>
+<p>Windows 使用 <code>deploy.ps1</code>：<code>.\scripts\deploy.ps1</code></p>
+<p>---</p>
+<h2 id="deploy.sh-执行流程">deploy.sh 执行流程</h2>
+<p>脚本自动完成 7 步：扫描串口 → 释放占用 → 验证连接 → BOM/语法检查 → 上传文件 → 启动运行 → 日志分析自修复</p>
+<h3 id="关键注意事项">关键注意事项</h3>
+<ol>
+<li><strong>部署前清理旧文件</strong> — 删除设备上的旧 main.py 等残留文件，防止上电自动运行导致 BLE 硬件状态残留</li>
+<li><strong>BOM 检查</strong> — 自动检测并移除 UTF-8 BOM（<code>EF BB BF</code>），避免 MicroPython NameError</li>
+<li><strong>语法检查</strong> — <code>py_compile.compile(&#x27;app.py&#x27;, doraise=True)</code> 验证代码正确性</li>
+<li><strong>日志监控</strong> — 启动后监控 N 秒，检测异常并自动修复（最多重试 2 次）</li>
+</ol>
+<p>---</p>
+<h2 id="异常模式与修复策略">异常模式与修复策略</h2>
+<table>
+<thead><tr>
+<th>异常模式</th>
+<th>原因</th>
+<th>修复策略</th>
+</tr></thead><tbody>
+<tr>
+<td><code>NameError</code></td>
+<td>BOM 字符 / 语法错误</td>
+<td>移除 BOM，检查语法，重新上传</td>
+</tr>
+<tr>
+<td><code>ImportError</code></td>
+<td>缺少模块</td>
+<td>检查固件版本，确认模块可用</td>
+</tr>
+<tr>
+<td><code>OSError: ENOMEM</code></td>
+<td>内存不足</td>
+<td>减少缓冲区大小，优化代码</td>
+</tr>
+<tr>
+<td><code>[Errno 5] EIO</code></td>
+<td>BLE 硬件状态残留</td>
+<td>物理断电重启设备</td>
+</tr>
+<tr>
+<td><code>[Errno 19] ENODEV</code></td>
+<td>BLE 射频控制器未就绪</td>
+<td>物理断电重启设备</td>
+</tr>
+<tr>
+<td><code>WiFi启动失败</code></td>
+<td>射频冲突</td>
+<td>先关闭 BLE 再启动 WiFi</td>
+</tr>
+<tr>
+<td><code>Traceback</code></td>
+<td>运行时错误</td>
+<td>分析错误行号，修复代码后重新部署</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="本地监控页面">本地监控页面</h2>
+<p><code>web/monitor.html</code> 通过 Web Bluetooth API 直接连接 ESP32 BLE 设备，需在 Chrome/Edge 中打开。</p>
+<h3 id="启动方式">启动方式</h3>
+<p>部署/烧录脚本完成后会自动启动 HTTP 服务器并打开监控页面。</p>
+<p>手动启动：</p>
+<pre><code class="language-bash">
+cd web &amp;&amp; python3 -m http.server 8765
+# 浏览器访问 http://localhost:8765/monitor.html
+</code></pre>
+<blockquote>⚠️ Trae IDE 内置预览不支持 Web Bluetooth API，必须使用外部 Chrome/Edge 浏览器。</blockquote>
+<p>---</p>
+<h2 id="部署检查清单">部署检查清单</h2>
+<ul>
+<li>[ ] 串口连接正常（自动扫描）</li>
+<li>[ ] 文件上传成功</li>
+<li>[ ] 程序启动无 Traceback</li>
+<li>[ ] 蓝牙广播正常（日志含 &quot;蓝牙功率计已启动&quot;）</li>
+<li>[ ] 内存 free &gt; 80KB</li>
+<li>[ ] 测试报告已生成并打开</li>
+</ul></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

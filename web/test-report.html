@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BikePower v1.6 测试报告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }
+.container { max-width: 900px; margin: 0 auto; }
+h1 { text-align: center; font-size: 28px; margin-bottom: 8px; color: #38bdf8; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
+.card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #334155; }
+.card h2 { font-size: 18px; color: #38bdf8; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card h2::before { content: ''; width: 4px; height: 20px; background: #38bdf8; border-radius: 2px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #334155; }
+th { color: #94a3b8; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { font-size: 14px; }
+tr:last-child td { border-bottom: none; }
+.pass { color: #4ade80; font-weight: 700; }
+.fail { color: #f87171; font-weight: 700; }
+.skip { color: #fbbf24; font-weight: 700; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.badge-pass { background: rgba(74,222,128,0.15); color: #4ade80; }
+.badge-fail { background: rgba(248,113,113,0.15); color: #f87171; }
+.badge-skip { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.info-item { background: #0f172a; border-radius: 8px; padding: 12px 16px; }
+.info-item .label { color: #94a3b8; font-size: 12px; margin-bottom: 4px; }
+.info-item .value { color: #e2e8f0; font-size: 15px; font-weight: 600; }
+.summary { display: flex; gap: 16px; justify-content: center; margin-bottom: 24px; }
+.summary-item { text-align: center; padding: 16px 24px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; min-width: 100px; }
+.summary-item .num { font-size: 32px; font-weight: 700; }
+.summary-item .desc { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+.log { background: #0f172a; border-radius: 8px; padding: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.6; color: #94a3b8; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+.log .info { color: #4ade80; }
+.log .warn { color: #fbbf24; }
+.footer { text-align: center; color: #475569; font-size: 12px; margin-top: 32px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>BikePower v1.6 测试报告</h1>
+<p class="subtitle">ESP32-C3 蓝牙功率计模拟器 | 2026-05-20 11:30 | macOS 15.7.3</p>
+
+<div class="summary">
+<div class="summary-item"><div class="num" style="color:#4ade80">8</div><div class="desc">通过</div></div>
+<div class="summary-item"><div class="num" style="color:#f87171">0</div><div class="desc">失败</div></div>
+<div class="summary-item"><div class="num" style="color:#fbbf24">1</div><div class="desc">需手动验证</div></div>
+</div>
+
+<div class="card">
+<h2>设备信息</h2>
+<div class="info-grid">
+<div class="info-item"><div class="label">芯片</div><div class="value">ESP32-C3 (QFN32)</div></div>
+<div class="info-item"><div class="label">修订版本</div><div class="value">v0.4</div></div>
+<div class="info-item"><div class="label">MAC 地址</div><div class="value">48:F6:EE:57:B3:E4</div></div>
+<div class="info-item"><div class="label">串口</div><div class="value">/dev/cu.usbmodem1101</div></div>
+<div class="info-item"><div class="label">USB VID</div><div class="value">0x303A (Espressif)</div></div>
+<div class="info-item"><div class="label">USB PID</div><div class="value">0x1001</div></div>
+<div class="info-item"><div class="label">固件版本</div><div class="value">v1.6</div></div>
+<div class="info-item"><div class="label">固件大小</div><div class="value">1.7 MB</div></div>
+<div class="info-item"><div class="label">运行时内存 free</div><div class="value">111 KB</div></div>
+<div class="info-item"><div class="label">运行时内存 alloc</div><div class="value">30 KB</div></div>
+<div class="info-item"><div class="label">MicroPython</div><div class="value">v1.28.0</div></div>
+<div class="info-item"><div class="label">ESP-IDF</div><div class="value">v5.5.1</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>测试结果</h2>
+<table>
+<thead><tr><th>测试项</th><th>验证方法</th><th>通过标准</th><th>结果</th><th>说明</th></tr></thead>
+<tbody>
+<tr>
+<td>BLE 启动</td><td>检查部署日志</td><td>蓝牙激活成功 + 蓝牙功率计已启动</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>蓝牙激活成功 ✓ 蓝牙功率计已启动 ✓</td>
+</tr>
+<tr>
+<td>BLE 广播</td><td>检查部署日志</td><td>开始广播 + 间隔500ms</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>开始广播... (间隔500ms) ✓</td>
+</tr>
+<tr>
+<td>BLE 服务注册</td><td>检查部署日志</td><td>服务注册成功</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>Cycling Power + Heart Rate 双 GATT 服务注册成功</td>
+</tr>
+<tr>
+<td>BLE GAP 设置</td><td>检查部署日志</td><td>名称 BikePower + MTU=69</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>GAP名称已设置: BikePower, MTU=69 ✓</td>
+</tr>
+<tr>
+<td>内存状态</td><td>mpremote exec gc.mem_free()</td><td>free > 80KB</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>free=111 KB > 80 KB ✓</td>
+</tr>
+<tr>
+<td>文件上传</td><td>mpremote ls</td><td>7 个文件完整</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>app.py + ble_service.py + config.py + logger.py + main.py + power_data.py + wifi_manager.py ✓</td>
+</tr>
+<tr>
+<td>WiFiManager 创建</td><td>检查部署日志</td><td>异步创建完成</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>WiFiManager 异步创建完成 ✓（未启动WiFi）</td>
+</tr>
+<tr>
+<td>主循环</td><td>检查部署日志</td><td>主循环已启动</td>
+<td><span class="badge badge-pass">PASS</span></td>
+<td>主循环已启动，等待按钮操作... ✓</td>
+</tr>
+<tr>
+<td>按钮短按</td><td>短按按钮，检查日志</td><td>功率 -10W</td>
+<td><span class="badge badge-skip">手动</span></td>
+<td>需手动短按按钮验证（mpremote exec 会中断主程序）</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>启动日志</h2>
+<div class="log"><span class="info">[INFO][BLE]</span> 初始化蓝牙功率计...
+<span class="info">[INFO][BLE]</span> 蓝牙对象创建成功
+<span class="info">[INFO][BLE]</span> 蓝牙激活成功
+<span class="info">[INFO][BLE]</span> GAP名称已设置: BikePower, MTU=69
+<span class="info">[INFO][BLE]</span> 中断处理函数设置成功
+<span class="info">[INFO][BLE]</span> 服务注册成功
+<span class="info">[INFO][BLE]</span> 开始广播... (间隔500ms)
+<span class="info">[INFO][BLE]</span> 蓝牙功率计已启动，设备名称: BikePower
+<span class="info">[INFO][BLE]</span> 最大连接数: 3
+<span class="info">[INFO][MAIN]</span> 内存: free=111KB alloc=30KB
+<span class="info">[INFO][MAIN]</span> WiFiManager 异步创建完成
+<span class="info">[INFO][MAIN]</span> 主循环已启动，等待按钮操作...</div>
+</div>
+
+<div class="card">
+<h2>固件信息</h2>
+<table>
+<thead><tr><th>文件</th><th>大小</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>firmware.bin</td><td>1.7 MB</td><td>合并固件（bootloader + partition-table + app），烧录地址 0x0</td></tr>
+<tr><td>bootloader.bin</td><td>17 KB</td><td>引导加载程序</td></tr>
+<tr><td>partition-table.bin</td><td>3 KB</td><td>分区表</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>冻结模块</h2>
+<div class="info-grid">
+<div class="info-item"><div class="label">config.py</div><div class="value">1.7 KB</div></div>
+<div class="info-item"><div class="label">logger.py</div><div class="value">1.4 KB</div></div>
+<div class="info-item"><div class="label">ble_service.py</div><div class="value">10 KB</div></div>
+<div class="info-item"><div class="label">power_data.py</div><div class="value">4.8 KB</div></div>
+<div class="info-item"><div class="label">wifi_manager.py</div><div class="value">33.5 KB</div></div>
+<div class="info-item"><div class="label">app.py</div><div class="value">3.4 KB</div></div>
+</div>
+</div>
+
+<p class="footer">BikePower v1.6 Test Report | Generated at 2026-05-20 11:30 | ESP32-C3 (QFN32) rev0.4</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝牙数据监控台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .connect-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .connect-btn {
+            padding: 16px 48px;
+            background: linear-gradient(135deg, #d64560 0%, #e91e63 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(214, 69, 96, 0.4);
+        }
+
+        .connect-btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 28px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #444;
+        }
+
+        .status-dot.connected {
+            background: #4caf50;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            color: #aaa;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .cards-section {
+            margin-bottom: 35px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .data-card {
+            background: linear-gradient(145deg, #1a1a1a 0%, #151515 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 35px 25px;
+        }
+
+        .combined-card {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card-item {
+            text-align: center;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        .data-value {
+            font-size: 64px;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .data-value.hr {
+            color: #d64560;
+        }
+
+        .data-value.power {
+            color: #ff9800;
+        }
+
+        .data-value.cadence {
+            color: #4caf50;
+        }
+
+        .data-unit {
+            font-size: 20px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .charts-section {
+            margin-bottom: 35px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: linear-gradient(145deg, #1a1a1a 0%, #151515 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .chart-title {
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            height: 220px;
+        }
+
+        .console-section {
+            background: linear-gradient(145deg, #1a1a1a 0%, #151515 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .console-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .console-tabs {
+            display: flex;
+            gap: 8px;
+            background: #0f0f0f;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .console-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .console-tab:hover {
+            color: #fff;
+        }
+
+        .console-tab.active {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .console-tab.error-tab.active {
+            background: rgba(214, 69, 96, 0.2);
+            color: #d64560;
+        }
+
+        .console-tab.error-tab:hover {
+            color: #d64560;
+        }
+
+        .console-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background: #2a2a2a;
+            color: #ccc;
+            border: 1px solid #3a3a3a;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        .console-log {
+            background: #0d0d0d;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            height: 300px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-timestamp {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .log-info {
+            color: #4fc3f7;
+        }
+
+        .log-success {
+            color: #81c784;
+        }
+
+        .log-error {
+            color: #e57373;
+        }
+
+        .log-warning {
+            color: #ffb74d;
+        }
+
+        .compat-banner {
+            display: none;
+            background: linear-gradient(135deg, #d64560 0%, #e91e63 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .compat-banner.show {
+            display: block;
+        }
+
+        .compat-banner h2 {
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .compat-banner p {
+            color: rgba(255,255,255,0.85);
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .compat-banner .compat-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .compat-btn {
+            padding: 12px 28px;
+            border: 2px solid rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .compat-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: #fff;
+        }
+
+        .compat-btn.primary {
+            background: #fff;
+            color: #d64560;
+            border-color: #fff;
+        }
+
+        .compat-btn.primary:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .compat-copy-msg {
+            display: inline-block;
+            color: #4caf50;
+            font-size: 13px;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .compat-copy-msg.show {
+            opacity: 1;
+        }
+
+        .compat-browsers {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .compat-browser-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+        }
+
+        .compat-browser-item.supported {
+            color: rgba(255,255,255,0.95);
+        }
+
+        .compat-browser-item .icon {
+            font-size: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .combined-card {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-value {
+                font-size: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>📊 蓝牙数据监控台</h1>
+            <div class="subtitle">实时监控心率、踏频、功率数据</div>
+        </div>
+
+        <div class="compat-banner" id="compatBanner">
+            <h2>⚠️ 当前浏览器不支持 Web Bluetooth</h2>
+            <p>蓝牙连接功能需要支持 Web Bluetooth API 的浏览器，当前环境无法调用蓝牙设备选择器。</p>
+            <p>请在支持的浏览器中打开本页面：</p>
+            <div class="compat-browsers">
+                <div class="compat-browser-item supported"><span class="icon">🌐</span> Chrome 56+</div>
+                <div class="compat-browser-item supported"><span class="icon">🌐</span> Edge 79+</div>
+                <div class="compat-browser-item supported"><span class="icon">🌐</span> Opera 43+</div>
+                <div class="compat-browser-item"><span class="icon">🚫</span> Safari</div>
+                <div class="compat-browser-item"><span class="icon">🚫</span> Firefox</div>
+                <div class="compat-browser-item"><span class="icon">🚫</span> IDE 内置预览</div>
+            </div>
+            <div class="compat-actions">
+                <button class="compat-btn primary" onclick="copyUrl()">📋 复制页面地址</button>
+                <button class="compat-btn" onclick="openInChrome()">🔗 尝试用 Chrome 打开</button>
+            </div>
+            <span class="compat-copy-msg" id="copyMsg">✅ 已复制，请粘贴到 Chrome 地址栏</span>
+        </div>
+
+        <div class="connect-section">
+            <button class="connect-btn" id="connectBtn" onclick="connect()">
+                🔗 连接蓝牙设备
+            </button>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot" id="hrStatus"></div>
+                <span class="status-text">心率</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="powerStatus"></div>
+                <span class="status-text">功率</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="cadenceStatus"></div>
+                <span class="status-text">踏频</span>
+            </div>
+        </div>
+
+        <!-- 数据卡片区域 -->
+        <div class="cards-section">
+            <div class="cards-grid">
+                <div class="data-card">
+                    <div class="combined-card">
+                        <div class="card-item">
+                            <div class="card-header">
+                                <span class="card-icon">💓</span>
+                                <span class="card-title">心率</span>
+                            </div>
+                            <div class="data-value hr" id="hrValue">--<span class="data-unit"> bpm</span></div>
+                        </div>
+
+                        <div class="card-item">
+                            <div class="card-header">
+                                <span class="card-icon">⚡</span>
+                                <span class="card-title">功率</span>
+                            </div>
+                            <div class="data-value power" id="powerValue">--<span class="data-unit"> W</span></div>
+                        </div>
+
+                        <div class="card-item">
+                            <div class="card-header">
+                                <span class="card-icon">🚴</span>
+                                <span class="card-title">踏频</span>
+                            </div>
+                            <div class="data-value cadence" id="cadenceValue">--<span class="data-unit"> rpm</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 趋势图区域 -->
+        <div class="charts-section">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">心率趋势</div>
+                    <div class="chart-container">
+                        <canvas id="hrChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">功率趋势</div>
+                    <div class="chart-container">
+                        <canvas id="powerChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">踏频趋势</div>
+                    <div class="chart-container">
+                        <canvas id="cadenceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="console-section">
+            <div class="console-header">
+                <span class="console-title">📝 监控日志</span>
+                <div class="console-tabs">
+                    <button class="console-tab active" onclick="switchTab('all')" id="tabAll">全部日志</button>
+                    <button class="console-tab error-tab" onclick="switchTab('error')" id="tabError">异常日志</button>
+                </div>
+                <div class="console-actions">
+                    <button class="action-btn" onclick="clearLogs()">清空日志</button>
+                    <button class="action-btn" onclick="downloadLogs('all')">下载全部</button>
+                    <button class="action-btn" onclick="downloadLogs('error')">下载异常</button>
+                </div>
+            </div>
+            <div class="console-log" id="consoleLogAll"></div>
+            <div class="console-log" id="consoleLogError" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 标准蓝牙服务UUID
+        const UUIDS = {
+            HEART_RATE_SERVICE: 0x180D,
+            HEART_RATE_MEASUREMENT: 0x2A37,
+            CYCLING_POWER_SERVICE: 0x1818,
+            CYCLING_POWER_MEASUREMENT: 0x2A63
+        };
+
+        let device = null;
+        let server = null;
+        let allLogEntries = [];
+        let errorLogEntries = [];
+        let currentTab = 'all';
+
+        // 数据存储
+        const dataPoints = {
+            hr: [],
+            power: [],
+            cadence: [],
+            labels: []
+        };
+        const MAX_DATA_POINTS = 150; // 约5分钟数据（假设每2秒一个点）
+
+        // 图表配置 - 深色主题
+        const chartConfig = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#666' }
+                    }
+                },
+                elements: {
+                    point: { radius: 2 },
+                    line: { tension: 0.4, spanGaps: true }
+                }
+            }
+        };
+
+        let hrChart, powerChart, cadenceChart;
+
+        // 初始化图表
+        function initCharts() {
+            hrChart = new Chart(document.getElementById('hrChart'), {
+                ...chartConfig,
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#d64560',
+                        backgroundColor: 'rgba(214, 69, 96, 0.15)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...chartConfig.options,
+                    scales: {
+                        ...chartConfig.options.scales,
+                        y: {
+                            ...chartConfig.options.scales.y,
+                            min: 40,
+                            suggestedMin: 60,
+                            suggestedMax: 180
+                        }
+                    }
+                }
+            });
+
+            powerChart = new Chart(document.getElementById('powerChart'), {
+                ...chartConfig,
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#ff9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.15)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...chartConfig.options,
+                    scales: {
+                        ...chartConfig.options.scales,
+                        y: {
+                            ...chartConfig.options.scales.y,
+                            min: 0,
+                            suggestedMax: 500
+                        }
+                    }
+                }
+            });
+
+            cadenceChart = new Chart(document.getElementById('cadenceChart'), {
+                ...chartConfig,
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.15)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...chartConfig.options,
+                    scales: {
+                        ...chartConfig.options.scales,
+                        y: {
+                            ...chartConfig.options.scales.y,
+                            min: 20,
+                            suggestedMin: 60,
+                            suggestedMax: 120
+                        }
+                    }
+                }
+            });
+        }
+
+        // 添加日志
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            const logEntry = { timestamp, message, type };
+            allLogEntries.push(logEntry);
+
+            // 如果是错误或警告，也添加到异常日志
+            if (type === 'error' || type === 'warning') {
+                errorLogEntries.push(logEntry);
+            }
+
+            // 创建日志条目
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'log-entry';
+            entryDiv.innerHTML = `<span class="log-timestamp">[${timestamp}]</span><span class="log-${type}">${message}</span>`;
+            
+            // 添加到全部日志
+            const allLogDiv = document.getElementById('consoleLogAll');
+            allLogDiv.appendChild(entryDiv.cloneNode(true));
+            allLogDiv.scrollTop = allLogDiv.scrollHeight;
+            
+            // 如果是异常类型，同时添加到异常日志
+            if (type === 'error' || type === 'warning') {
+                const errorLogDiv = document.getElementById('consoleLogError');
+                errorLogDiv.appendChild(entryDiv.cloneNode(true));
+                errorLogDiv.scrollTop = errorLogDiv.scrollHeight;
+            }
+        }
+
+        // 切换Tab
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // 更新tab按钮样式
+            document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+            document.getElementById('tabError').classList.toggle('active', tab === 'error');
+            
+            // 显示/隐藏对应的日志容器
+            document.getElementById('consoleLogAll').style.display = tab === 'all' ? 'block' : 'none';
+            document.getElementById('consoleLogError').style.display = tab === 'error' ? 'block' : 'none';
+        }
+
+        // 清空日志
+        function clearLogs() {
+            allLogEntries = [];
+            errorLogEntries = [];
+            document.getElementById('consoleLogAll').innerHTML = '';
+            document.getElementById('consoleLogError').innerHTML = '';
+        }
+
+        // 下载日志
+        function downloadLogs(type = 'all') {
+            const entries = type === 'all' ? allLogEntries : errorLogEntries;
+            
+            if (entries.length === 0) {
+                addLog(type === 'all' ? '没有日志可下载' : '没有异常日志可下载', 'warning');
+                return;
+            }
+
+            const logText = entries.map(entry => 
+                `[${entry.timestamp}] ${entry.message}`
+            ).join('\n');
+
+            const blob = new Blob([logText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().slice(0,10);
+            a.download = type === 'all' ? 
+                `bluetooth-logs-${dateStr}.txt` : 
+                `bluetooth-error-logs-${dateStr}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            addLog(type === 'all' ? '全部日志已下载' : '异常日志已下载', 'success');
+        }
+
+        // 更新数据显示和图表
+        function updateData(type, value) {
+            const timeLabel = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+
+            if (type === 'hr') {
+                document.getElementById('hrValue').innerHTML = `${value}<span class="data-unit"> bpm</span>`;
+                dataPoints.hr.push(value);
+                // 同步其他数组长度
+                if (dataPoints.power.length < dataPoints.hr.length) {
+                    dataPoints.power.push(null);
+                }
+                if (dataPoints.cadence.length < dataPoints.hr.length) {
+                    dataPoints.cadence.push(null);
+                }
+                document.getElementById('hrStatus').classList.add('connected');
+            } else if (type === 'power') {
+                document.getElementById('powerValue').innerHTML = `${value}<span class="data-unit"> W</span>`;
+                dataPoints.power.push(value);
+                // 同步其他数组长度
+                if (dataPoints.hr.length < dataPoints.power.length) {
+                    dataPoints.hr.push(null);
+                }
+                if (dataPoints.cadence.length < dataPoints.power.length) {
+                    dataPoints.cadence.push(null);
+                }
+                document.getElementById('powerStatus').classList.add('connected');
+            } else if (type === 'cadence') {
+                document.getElementById('cadenceValue').innerHTML = `${value}<span class="data-unit"> rpm</span>`;
+                // 确保数组长度一致
+                while (dataPoints.cadence.length < dataPoints.labels.length) {
+                    dataPoints.cadence.push(null);
+                }
+                // 更新最后一个值（踏频可能与功率同时到达）
+                dataPoints.cadence[dataPoints.cadence.length - 1] = value;
+                document.getElementById('cadenceStatus').classList.add('connected');
+                return; // 踏频不添加新的时间标签，因为和功率同时到达
+            }
+
+            dataPoints.labels.push(timeLabel);
+
+            // 限制数据点数量（保持约5分钟数据）
+            if (dataPoints.labels.length > MAX_DATA_POINTS) {
+                dataPoints.labels.shift();
+                dataPoints.hr.shift();
+                dataPoints.power.shift();
+                dataPoints.cadence.shift();
+            }
+
+            // 更新图表
+            if (hrChart) {
+                hrChart.data.labels = [...dataPoints.labels];
+                hrChart.data.datasets[0].data = [...dataPoints.hr];
+                hrChart.update('none');
+            }
+            if (powerChart) {
+                powerChart.data.labels = [...dataPoints.labels];
+                powerChart.data.datasets[0].data = [...dataPoints.power];
+                powerChart.update('none');
+            }
+            if (cadenceChart) {
+                cadenceChart.data.labels = [...dataPoints.labels];
+                cadenceChart.data.datasets[0].data = [...dataPoints.cadence];
+                cadenceChart.update('none');
+            }
+        }
+
+        // 解析心率数据
+        function parseHeartRate(event) {
+            const value = event.target.value;
+            const flags = value.getUint8(0);
+            const hrFormat = flags & 0x01;
+
+            let heartRate;
+            if (hrFormat === 0) {
+                heartRate = value.getUint8(1);
+            } else {
+                heartRate = value.getUint16(1, true);
+            }
+
+            updateData('hr', heartRate);
+            addLog(`收到心率数据: ${heartRate} bpm`, 'info');
+        }
+
+        // 解析功率数据
+        let lastPowerValue = 0;
+        let lastCrankRevolutions = 0;
+        let lastCrankTime = 0;
+        function parsePower(event) {
+            const value = event.target.value;
+            const flags = value.getUint16(0, true);
+            const power = value.getInt16(2, true);
+            
+            // 调试：打印原始数据
+            const dataBytes = [];
+            for (let i = 0; i < value.byteLength; i++) {
+                dataBytes.push(value.getUint8(i).toString(16).padStart(2, '0'));
+            }
+            addLog(`功率原始数据: ${dataBytes.join(' ')}, flags: 0x${flags.toString(16)}`, 'info');
+            
+            // 先更新功率数据（会添加时间标签）
+            updateData('power', power);
+            lastPowerValue = power;
+            addLog(`收到功率数据: ${power} W`, 'info');
+            
+            // 检查是否有曲轴转数数据 (flag bit 5 = 0x0020)
+            // 根据 cyc26-04.py，数据格式为：Flags(2) + Power(2) + RevCount(2) + TimeStamp(2)
+            if (flags & 0x20) {
+                const crankRevolutions = value.getUint16(4, true);  // 16位转数
+                const crankTime = value.getUint16(6, true);         // 16位时间戳(1/1024秒)
+                
+                if (lastCrankRevolutions > 0 && lastCrankTime > 0 && crankTime !== lastCrankTime) {
+                    let deltaRevs = crankRevolutions - lastCrankRevolutions;
+                    let deltaTime = crankTime - lastCrankTime;
+                    
+                    // 处理16位溢出
+                    if (deltaTime < 0) deltaTime += 65536;
+                    if (deltaRevs < 0) deltaRevs += 65536;
+                    
+                    if (deltaTime > 0) {
+                        // 计算公式: cadence = (rev_diff * 60 * 1024) / time_diff
+                        const cadence = Math.round((deltaRevs * 60 * 1024) / deltaTime);
+                        updateData('cadence', cadence);
+                        addLog(`收到踏频数据: ${cadence} rpm`, 'info');
+                    }
+                }
+                
+                lastCrankRevolutions = crankRevolutions;
+                lastCrankTime = crankTime;
+            }
+        }
+
+
+
+        // 连接蓝牙设备
+        async function connect() {
+            if (!navigator.bluetooth) {
+                addLog('您的浏览器不支持 Web Bluetooth API', 'error');
+                alert('请使用 Chrome、Edge 或其他支持 Web Bluetooth 的浏览器\n'
+                    + '支持浏览器：Chrome 56+、Edge 79+、Opera 43+\n'
+                    + '要求：HTTPS 或 localhost 环境');
+                return;
+            }
+
+            try {
+                addLog('正在请求蓝牙设备...', 'info');
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('connectBtn').textContent = '搜索中...';
+
+                device = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { services: [UUIDS.CYCLING_POWER_SERVICE] }
+                    ],
+                    optionalServices: [
+                        UUIDS.HEART_RATE_SERVICE,
+                        UUIDS.CYCLING_POWER_SERVICE
+                    ]
+                });
+
+                addLog(`已选择设备: ${device.name || '未命名设备'}`, 'success');
+
+                device.addEventListener('gattserverdisconnected', onDisconnected);
+
+                addLog('正在连接 GATT 服务器...', 'info');
+
+                const gattPromise = device.gatt.connect();
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('GATT 连接超时（15秒），请确认设备在范围内且未连接其他客户端')), 15000)
+                );
+                server = await Promise.race([gattPromise, timeoutPromise]);
+                addLog('GATT 服务器连接成功', 'success');
+
+                let hrOk = false;
+                let powerOk = false;
+
+                try {
+                    const hrService = await server.getPrimaryService(UUIDS.HEART_RATE_SERVICE);
+                    const hrChar = await hrService.getCharacteristic(UUIDS.HEART_RATE_MEASUREMENT);
+                    await hrChar.startNotifications();
+                    hrChar.addEventListener('characteristicvaluechanged', parseHeartRate);
+                    hrOk = true;
+                    addLog('✅ 心率服务已启动', 'success');
+                } catch (e) {
+                    addLog(`⚠️ 心率服务不可用: ${e.message}`, 'warning');
+                    addLog('提示: 心率数据可能由功率服务间接提供，不影响核心功能', 'info');
+                }
+
+                try {
+                    const powerService = await server.getPrimaryService(UUIDS.CYCLING_POWER_SERVICE);
+                    const powerChar = await powerService.getCharacteristic(UUIDS.CYCLING_POWER_MEASUREMENT);
+                    await powerChar.startNotifications();
+                    powerChar.addEventListener('characteristicvaluechanged', parsePower);
+                    powerOk = true;
+                    addLog('✅ 功率服务已启动（含踏频数据）', 'success');
+                } catch (e) {
+                    addLog(`⚠️ 功率服务不可用: ${e.message}`, 'warning');
+                }
+
+                if (!hrOk && !powerOk) {
+                    addLog('❌ 心率和功率服务均不可用，连接可能无效', 'error');
+                    addLog('建议: 确认设备固件支持 Cycling Power (0x1818) 和 Heart Rate (0x180D) 服务', 'warning');
+                }
+
+                document.getElementById('connectBtn').textContent = '断开连接';
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('connectBtn').onclick = disconnect;
+
+            } catch (error) {
+                if (error.name === 'NotFoundError') {
+                    if (error.message.includes('cancelled') || error.message.includes('User cancelled')) {
+                        addLog('已取消选择设备，点击按钮可重新搜索', 'warning');
+                    } else {
+                        addLog('未找到匹配的蓝牙设备', 'error');
+                        addLog('排查建议:', 'warning');
+                        addLog('  1. 确认 ESP32 设备已上电且程序在运行', 'warning');
+                        addLog('  2. 确认设备广播名称含 "BikePower"', 'warning');
+                        addLog('  3. 确认电脑蓝牙已开启', 'warning');
+                        addLog('  4. 尝试靠近设备后重试', 'warning');
+                    }
+                } else if (error.name === 'NetworkError' || error.message.includes('GATT')) {
+                    addLog(`蓝牙连接失败: ${error.message}`, 'error');
+                    addLog('排查建议:', 'warning');
+                    addLog('  1. 设备可能已被其他客户端连接，请断开后重试', 'warning');
+                    addLog('  2. 设备可能距离过远，请靠近后重试', 'warning');
+                    addLog('  3. 尝试重启设备蓝牙', 'warning');
+                } else if (error.message.includes('超时')) {
+                    addLog(error.message, 'error');
+                } else {
+                    addLog(`连接失败: ${error.message}`, 'error');
+                }
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('connectBtn').textContent = '🔗 连接蓝牙设备';
+                console.error(error);
+            }
+        }
+
+        // 断开连接
+        function disconnect() {
+            if (device && device.gatt.connected) {
+                device.gatt.disconnect();
+            }
+        }
+
+        // 处理断开连接事件
+        function onDisconnected() {
+            addLog('蓝牙连接已断开', 'warning');
+            document.getElementById('hrStatus').classList.remove('connected');
+            document.getElementById('powerStatus').classList.remove('connected');
+            document.getElementById('cadenceStatus').classList.remove('connected');
+            document.getElementById('connectBtn').textContent = '🔗 连接蓝牙设备';
+            document.getElementById('connectBtn').onclick = connect;
+            device = null;
+            server = null;
+            lastCrankRevolutions = 0;
+            lastCrankTime = 0;
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            initCharts();
+            checkBluetoothSupport();
+        };
+
+        function checkBluetoothSupport() {
+            const supported = !!navigator.bluetooth;
+            const banner = document.getElementById('compatBanner');
+            const connectBtn = document.getElementById('connectBtn');
+
+            if (!supported) {
+                banner.classList.add('show');
+                connectBtn.disabled = true;
+                connectBtn.textContent = '⚠️ 浏览器不支持蓝牙';
+                connectBtn.style.background = '#333';
+                addLog('当前浏览器不支持 Web Bluetooth API', 'error');
+                addLog('请在 Chrome / Edge 浏览器中打开本页面', 'warning');
+            } else {
+                banner.classList.remove('show');
+                addLog('监控台已初始化，浏览器支持 Web Bluetooth', 'success');
+                addLog('请点击连接按钮开始', 'info');
+            }
+        }
+
+        function copyUrl() {
+            const url = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => showCopyMsg());
+            } else {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showCopyMsg();
+            }
+        }
+
+        function showCopyMsg() {
+            const msg = document.getElementById('copyMsg');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 3000);
+        }
+
+        function openInChrome() {
+            const url = window.location.href;
+            const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+            if (isMac) {
+                addLog('请在终端执行: open -a "Google Chrome" ' + url, 'info');
+            } else {
+                addLog('请按 Win+R 输入: chrome ' + url, 'info');
+            }
+            copyUrl();
+        }
+    </script>
+</body>
+</html>

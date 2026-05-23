@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32-C3 MicroPython 固件编译打包指南 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link active" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>ESP32-C3 MicroPython 固件编译打包指南</h1><p>固件编译、冻结模块、烧录和发布产物说明。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#1.-一键编译与烧录">1. 一键编译与烧录</a><a href="#2.-冻结（freeze）说明">2. 冻结（Freeze）说明</a><a href="#3.-环境准备（手动步骤）">3. 环境准备（手动步骤）</a><a href="#4.-手动编译步骤">4. 手动编译步骤</a><a href="#5.-烧录方式">5. 烧录方式</a><a href="#6.-冻结模块-vs-文件系统部署">6. 冻结模块 vs 文件系统部署</a><a href="#7.-常见问题">7. 常见问题</a><a href="#8.-编译产物">8. 编译产物</a></div>
+<article class="content"><h1 id="esp32-c3-micropython-固件编译打包指南">ESP32-C3 MicroPython 固件编译打包指南</h1>
+<blockquote>
+<p>将 BikePower 项目 Python 代码冻结（freeze）到 MicroPython 固件中，生成可直接烧录的 <code>firmware.bin</code>。</p>
+</blockquote>
+<p>---</p>
+<h2 id="1.-一键编译与烧录">1. 一键编译与烧录</h2>
+<pre><code class="language-bash"># 编译固件
+bash scripts/build_firmware.sh
+bash scripts/build_firmware.sh -c        # 清理后重新编译
+
+# 烧录固件（首次需擦除）
+bash scripts/flash_firmware.sh -e
+bash scripts/flash_firmware.sh -p /dev/cu.usbmodem1101  # 指定串口</code></pre>
+<p>编译成功后，固件文件位于 <code>target/firmware.bin</code>。</p>
+<p>---</p>
+<h2 id="2.-冻结（freeze）说明">2. 冻结（Freeze）说明</h2>
+<p>MicroPython 支持将 Python 代码预编译为字节码并嵌入固件镜像中：</p>
+<ul>
+<li><strong>启动更快</strong> — 代码已预编译，无需运行时编译</li>
+<li><strong>节省 RAM</strong> — 字节码直接从 Flash 执行，不占用 RAM</li>
+<li><strong>代码保护</strong> — 源代码不可直接访问</li>
+</ul>
+<h3 id="manifest-文件">Manifest 文件</h3>
+<p><code>scripts/manifest.py</code> 定义了要冻结的 Python 模块：</p>
+<pre><code class="language-python">include(&quot;$(PORT_DIR)/boards/manifest.py&quot;)
+
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;boot.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;config.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;logger.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;utils.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;ble_service.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;power_data.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;wifi_manager.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;web_pages.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;ota_updater.py&quot;)
+freeze(&quot;$(MPY_DIR)/..&quot;, &quot;app.py&quot;)</code></pre>
+<blockquote>
+<p>⚠️ <code>$(MPY_DIR)/..</code> 已经是项目根目录，不要再加 <code>esp32-power</code>。</p>
+</blockquote>
+<p>---</p>
+<h2 id="3.-环境准备（手动步骤）">3. 环境准备（手动步骤）</h2>
+<h3 id="3.1-系统依赖">3.1 系统依赖</h3>
+<pre><code class="language-bash"># macOS
+brew install cmake ninja python3
+
+# Ubuntu/Debian
+sudo apt-get install build-essential cmake git python3 python3-pip ninja-build</code></pre>
+<h3 id="3.2-克隆-micropython">3.2 克隆 MicroPython</h3>
+<pre><code class="language-bash">git clone -b v1.28.0 --depth 1 https://github.com/micropython/micropython.git
+cd micropython &amp;&amp; git submodule update --init --recursive --depth 1</code></pre>
+<h3 id="3.3-安装-esp-idf">3.3 安装 ESP-IDF</h3>
+<pre><code class="language-bash">git clone -b v5.5.1 --depth 1 https://github.com/espressif/esp-idf.git
+cd esp-idf &amp;&amp; git submodule update --init --recursive --depth 1
+./install.sh esp32c3</code></pre>
+<blockquote>
+<p>⚠️ ESP-IDF 子模块较多，网络不稳定时可能部分克隆失败，重新执行 <code>git submodule update --init --recursive --depth 1</code> 即可。</p>
+</blockquote>
+<h3 id="3.4-编译-mpy-cross">3.4 编译 mpy-cross</h3>
+<pre><code class="language-bash">cd micropython &amp;&amp; make -C mpy-cross</code></pre>
+<p>---</p>
+<h2 id="4.-手动编译步骤">4. 手动编译步骤</h2>
+<pre><code class="language-bash">source /path/to/esp-idf/export.sh
+cd micropython &amp;&amp; make -C mpy-cross
+cd ports/esp32
+make BOARD=ESP32_GENERIC_C3 submodules
+make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32-power/scripts/manifest.py -j$(nproc)</code></pre>
+<blockquote>
+<p>⚠️ <code>make submodules</code> 必须指定 <code>BOARD=ESP32_GENERIC_C3</code>，否则默认使用 ESP32（Xtensa）会编译失败。</p>
+</blockquote>
+<p>---</p>
+<h2 id="5.-烧录方式">5. 烧录方式</h2>
+<h3 id="合并固件烧录（推荐）">合并固件烧录（推荐）</h3>
+<p>使用 <code>firmware.bin</code>（包含 bootloader + partition-table + app），写入地址 <code>0x0</code>：</p>
+<pre><code class="language-bash"># 示例串口，实际请使用 bash scripts/common.sh scan 自动扫描
+esptool.py --chip esp32c3 --port /dev/cu.usbmodem1101 erase_flash
+esptool.py --chip esp32c3 --port /dev/cu.usbmodem1101 --baud 460800 write_flash 0x0 target/firmware.bin</code></pre>
+<blockquote>
+<p>⚠️ 必须使用 <code>firmware.bin</code>（合并固件），不能使用 <code>micropython.bin</code>（仅应用部分）分段烧录，否则设备无法启动。</p>
+</blockquote>
+<h3 id="烧录后上传项目文件">烧录后上传项目文件</h3>
+<p>固件烧录后设备不会自动运行，需上传项目文件：</p>
+<pre><code class="language-bash"># 示例串口，实际请使用 bash scripts/common.sh scan 自动扫描
+# 推荐使用一键部署脚本
+bash scripts/deploy.sh</code></pre>
+<p>---</p>
+<h2 id="6.-冻结模块-vs-文件系统部署">6. 冻结模块 vs 文件系统部署</h2>
+<table>
+<thead><tr><th>对比项</th><th>冻结模块（固件）</th><th>文件系统部署</th></tr></thead><tbody>
+<tr><td>RAM 占用</td><td>更少（字节码从 Flash 执行）</td><td>更多（需加载到 RAM）</td></tr>
+<tr><td>启动速度</td><td>更快（预编译）</td><td>较慢（运行时编译）</td></tr>
+<tr><td>更新方式</td><td>重新编译+烧录固件</td><td>mpremote cp 上传文件</td></tr>
+<tr><td>开发效率</td><td>低（每次修改需重编译）</td><td>高（秒级更新）</td></tr>
+<tr><td>适用场景</td><td>生产发布</td><td>开发调试</td></tr>
+</tbody></table>
+<p><strong>建议</strong>：开发阶段使用 <code>deploy.sh</code>，发布阶段使用 <code>build_firmware.sh</code> + <code>flash_firmware.sh</code>。</p>
+<p>---</p>
+<h2 id="7.-常见问题">7. 常见问题</h2>
+<table>
+<thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td><code>idf.py: command not found</code></td><td>ESP-IDF 环境未加载</td><td><code>source esp-idf/export.sh</code></td></tr>
+<tr><td><code>xtensa-esp32-elf-gcc: not found</code></td><td>未指定 BOARD</td><td><code>make BOARD=ESP32_GENERIC_C3 submodules</code></td></tr>
+<tr><td><code>Missing esp-mqtt submodule</code></td><td>子模块克隆不完整</td><td><code>git submodule update --init --recursive --depth 1</code></td></tr>
+<tr><td>固件太大无法烧录</td><td>冻结模块过多</td><td>减少 manifest.py 中的模块或使用 <code>opt=3</code></td></tr>
+<tr><td>设备启动报 <code>overlaps bootloader</code></td><td>使用了 micropython.bin</td><td>改用 firmware.bin（合并固件）写入 0x0</td></tr>
+</tbody></table>
+<p>---</p>
+<h2 id="8.-编译产物">8. 编译产物</h2>
+<table>
+<thead><tr><th>文件</th><th>路径</th><th>大小</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>firmware.bin</code></td><td><code>target/</code></td><td>~1.7MB</td><td>合并固件（烧录到 0x0）</td></tr>
+<tr><td><code>firmware-{timestamp}.bin</code></td><td><code>target/</code></td><td>~1.7MB</td><td>带时间戳的备份，自动保留最新 3 个</td></tr>
+<tr><td><code>bootloader.bin</code></td><td>MicroPython 构建目录</td><td>~17KB</td><td>引导加载程序（已包含在合并固件中）</td></tr>
+<tr><td><code>partition-table.bin</code></td><td>MicroPython 构建目录</td><td>~3KB</td><td>分区表（已包含在合并固件中）</td></tr>
+<tr><td><code>*.mpy</code></td><td><code>releases/ota/vX.Y.Z/</code></td><td>~51KB</td><td>OTA 字节码包，每个版本独立目录</td></tr>
+<tr><td><code>version.json</code></td><td><code>releases/latest/</code></td><td>&lt;10KB</td><td>OTA 当前版本清单，设备固定读取稳定入口</td></tr>
+</tbody></table></article>
+</main>
+</div>
+</body>
+</html>

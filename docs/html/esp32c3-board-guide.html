@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>合宙 CORE ESP32-C3 开发板硬件参考 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link active" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>合宙 CORE ESP32-C3 开发板硬件参考</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#一、开发板概述">一、开发板概述</a><a href="#型号说明">型号说明</a><a href="#二、硬件资源">二、硬件资源</a><a href="#外设接口">外设接口</a><a href="#三、引脚定义">三、引脚定义</a><a href="#完整引脚表">完整引脚表</a><a href="#四、bikepower-项目-gpio-使用">四、BikePower 项目 GPIO 使用</a><a href="#flash-模式注意事项">Flash 模式注意事项</a><a href="#strapping-引脚">Strapping 引脚</a><a href="#五、供电方式">五、供电方式</a><a href="#六、版本辨别">六、版本辨别</a><a href="#七、相关链接">七、相关链接</a></div>
+<article class="content"><h1 id="合宙-core-esp32-c3-开发板硬件参考">合宙 CORE ESP32-C3 开发板硬件参考</h1>
+<blockquote>本文档介绍 BikePower 项目所使用的硬件平台——合宙 CORE ESP32-C3 开发板（经典款），包含资源规格、引脚定义、供电方式、LED/按钮使用说明。</blockquote>
+<p>---</p>
+<h2 id="一、开发板概述">一、开发板概述</h2>
+<p>CORE ESP32-C3 核心板是基于乐鑫 ESP32-C3 设计的紧凑型开发板，尺寸仅 <strong>21mm × 51mm</strong>，板边采用邮票孔设计，可直接焊接嵌入产品。核心板支持 UART、GPIO、SPI、I2C、ADC、PWM 等接口。</p>
+<p>!<a href="../images/esp32c3-front.jpg">合宙 CORE ESP32-C3 开发板正面</a></p>
+<p>!<a href="../images/esp32c3-pinout.jpg">合宙 CORE ESP32-C3 引脚功能及分布</a></p>
+<h3 id="型号说明">型号说明</h3>
+<table>
+<thead><tr>
+<th>版本</th>
+<th>USB 接口</th>
+<th>驱动</th>
+<th>刷机方式</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>经典款</strong>（本项目所用）</td>
+<td>Type-C + CH343 USB 转 TTL</td>
+<td>需安装 CH343 驱动</td>
+<td>UART0 串口烧录</td>
+</tr>
+<tr>
+<td>新款（USB 直连）</td>
+<td>Type-C 直连 ESP32-C3 USB</td>
+<td>Win8+ 免驱</td>
+<td>需选 USB 字样固件，GPIO18/19 被占用</td>
+</tr>
+</tbody></table>
+<blockquote><strong>本项目使用经典款</strong>。经典款需安装 <a href="http://www.wch.cn/downloads/CH343SER_EXE.html">CH343 驱动</a> 后才能正常下载固件。默认 CDC 驱动只能打印日志，速率太慢会导致下载失败。</blockquote>
+<p>---</p>
+<h2 id="二、硬件资源">二、硬件资源</h2>
+<table>
+<thead><tr>
+<th>资源</th>
+<th>规格</th>
+</tr></thead><tbody>
+<tr>
+<td>主芯片</td>
+<td>ESP32-C3 (RISC-V 32 位单核, 最高 160MHz)</td>
+</tr>
+<tr>
+<td>ROM</td>
+<td>384 KB</td>
+</tr>
+<tr>
+<td>SRAM</td>
+<td>400 KB（其中 16 KB 用于 Cache）</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td>板载 4 MB SPI Flash（DIO 模式，最大支持 16 MB）</td>
+</tr>
+<tr>
+<td>WiFi</td>
+<td>802.11b/g/n (2.4 GHz)，最高 150 Mbps</td>
+</tr>
+<tr>
+<td>蓝牙</td>
+<td>Bluetooth LE 5.0，支持 125Kbps/500Kbps/1Mbps/2Mbps</td>
+</tr>
+<tr>
+<td>USB</td>
+<td>Type-C 接口，CH343 USB 转 UART0</td>
+</tr>
+<tr>
+<td>天线</td>
+<td>2.4G PCB 板载天线</td>
+</tr>
+<tr>
+<td>尺寸</td>
+<td>21 mm × 51 mm</td>
+</tr>
+<tr>
+<td>工作温度</td>
+<td>-40°C ~ 85°C</td>
+</tr>
+</tbody></table>
+<h3 id="外设接口">外设接口</h3>
+<table>
+<thead><tr>
+<th>接口</th>
+<th>数量</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>UART</td>
+<td>2 路</td>
+<td>UART0（下载/日志）、UART1</td>
+</tr>
+<tr>
+<td>SPI</td>
+<td>1 路</td>
+<td>SPI2，支持主模式</td>
+</tr>
+<tr>
+<td>I2C</td>
+<td>1 路</td>
+<td>I2C 控制器</td>
+</tr>
+<tr>
+<td>ADC</td>
+<td>5 路</td>
+<td>12 位 SAR ADC，最高 100 KSPS</td>
+</tr>
+<tr>
+<td>PWM</td>
+<td>4 路</td>
+<td>任意 GPIO 可复用，同时最多 4 路</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>15 路</td>
+<td>可用外部管脚，可复用</td>
+</tr>
+<tr>
+<td>LED</td>
+<td>2 路</td>
+<td>贴片 LED：D4(GPIO12)、D5(GPIO13)</td>
+</tr>
+<tr>
+<td>按钮</td>
+<td>2 个</td>
+<td>BOOT(GPIO9) + RESET</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="三、引脚定义">三、引脚定义</h2>
+<h3 id="完整引脚表">完整引脚表</h3>
+<table>
+<thead><tr>
+<th>编号</th>
+<th>名称</th>
+<th>复位后默认功能</th>
+<th>复用功能</th>
+<th>电源域</th>
+<th>上下拉</th>
+</tr></thead><tbody>
+<tr>
+<td>01</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>02</td>
+<td>IO00</td>
+<td>GPIO00, 输入/输出/高阻</td>
+<td>UART1_TX / ADC_0</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>03</td>
+<td>IO01</td>
+<td>GPIO01, 输入/输出/高阻</td>
+<td>UART1_RX / ADC_1</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>04</td>
+<td>IO12</td>
+<td>GPIO12, 输入/输出/高阻</td>
+<td>SPIHD (Flash)</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>05</td>
+<td>IO18</td>
+<td>GPIO18, 输入/输出/高阻</td>
+<td>USB_D-</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>06</td>
+<td>IO19</td>
+<td>GPIO19, 输入/输出/高阻</td>
+<td>USB_D+</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>07</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>08</td>
+<td>U0_RX</td>
+<td>GPIO20, 输入/输出/高阻</td>
+<td>UART0_RX</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>09</td>
+<td>U0_TX</td>
+<td>GPIO21, 输入/输出/高阻</td>
+<td>UART0_TX</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>10</td>
+<td>IO13</td>
+<td>GPIO13, 输入/输出/高阻</td>
+<td>—</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>11</td>
+<td>NC</td>
+<td>未连接</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>12</td>
+<td>RESET</td>
+<td>芯片复位</td>
+<td>—</td>
+<td>VDD3P3_RTC</td>
+<td>—</td>
+</tr>
+<tr>
+<td>13</td>
+<td>3.3V</td>
+<td>芯片电源 3.3V</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>14</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>15</td>
+<td>PWB</td>
+<td>3.3V 供电控制，高有效，不用可悬空</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>16</td>
+<td>5V</td>
+<td>5V 电源，与 USB VBUS 相连</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>17</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>18</td>
+<td>3.3V</td>
+<td>芯片电源 3.3V</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>19</td>
+<td>IO02</td>
+<td>GPIO02, 输入/输出/高阻</td>
+<td>SPI2_CK / ADC_2</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>20</td>
+<td>IO03</td>
+<td>GPIO03, 输入/输出/高阻</td>
+<td>SPI2_MOSI / ADC_3</td>
+<td>VDD3P3_RTC</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>21</td>
+<td>IO10</td>
+<td>GPIO10, 输入/输出/高阻</td>
+<td>SPI2_MISO</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>22</td>
+<td>IO06</td>
+<td>GPIO06, 输入/输出/高阻</td>
+<td>—</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>23</td>
+<td>IO07</td>
+<td>GPIO07, 输入/输出/高阻</td>
+<td>SPI2_CS</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>24</td>
+<td>PB_11</td>
+<td>GPIO11, 输入/输出/高阻</td>
+<td>VDD_SPI</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>25</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>26</td>
+<td>3.3V</td>
+<td>芯片电源 3.3V</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>27</td>
+<td>IO05</td>
+<td>GPIO05, 输入/输出/高阻</td>
+<td>I2C_SCL / ADC_5</td>
+<td>VDD3P3_RTC</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>28</td>
+<td>IO04</td>
+<td>GPIO04, 输入/输出/高阻</td>
+<td>I2C_SDA / ADC_4</td>
+<td>VDD3P3_RTC</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>29</td>
+<td>IO08</td>
+<td>GPIO08, 输入/输出/高阻</td>
+<td>—</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>30</td>
+<td>BOOT</td>
+<td>GPIO09, 输入</td>
+<td>BOOTMODE</td>
+<td>VDD3P3_CPU</td>
+<td>UP/DOWN</td>
+</tr>
+<tr>
+<td>31</td>
+<td>5V</td>
+<td>5V 电源，与 USB VBUS 相连</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>32</td>
+<td>GND</td>
+<td>接地</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="四、bikepower-项目-gpio-使用">四、BikePower 项目 GPIO 使用</h2>
+<table>
+<thead><tr>
+<th>GPIO</th>
+<th>功能</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>GPIO9</td>
+<td>BOOT 按钮</td>
+<td>内部上拉，按下为低电平。短按调节功率、长按触发配网</td>
+</tr>
+<tr>
+<td>GPIO12</td>
+<td>D4 LED</td>
+<td>高电平有效，LED 状态指示灯</td>
+</tr>
+<tr>
+<td>GPIO13</td>
+<td>D5 LED</td>
+<td>高电平有效，板载第二颗 LED（本项目中保留未用）</td>
+</tr>
+</tbody></table>
+<h3 id="flash-模式注意事项">Flash 模式注意事项</h3>
+<p>本项目使用 <strong>DIO Flash 模式</strong>（MicroPython 默认），GPIO12/13 在 DIO 模式下可作为普通 GPIO 使用。<strong>禁止使用 QSPI 模式</strong>，否则 GPIO12~17 被 Flash 占用，LED 不可用。</p>
+<h3 id="strapping-引脚">Strapping 引脚</h3>
+<p>ESP32-C3 启动时 GPIO2、GPIO8、GPIO9 的状态影响启动模式：</p>
+<table>
+<thead><tr>
+<th>GPIO</th>
+<th>Strapping 功能</th>
+<th>本项目中用途</th>
+</tr></thead><tbody>
+<tr>
+<td>GPIO2</td>
+<td>启动时需为高电平或悬空</td>
+<td>未使用</td>
+</tr>
+<tr>
+<td>GPIO8</td>
+<td>启动时需为高电平或悬空</td>
+<td>未使用</td>
+</tr>
+<tr>
+<td>GPIO9</td>
+<td>启动时内部上拉，低电平进入下载模式</td>
+<td>BOOT 按钮</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="五、供电方式">五、供电方式</h2>
+<table>
+<thead><tr>
+<th>方式</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>Type-C USB 供电</td>
+<td>调试首选，5V 输入经 LDO 降压至 3.3V</td>
+</tr>
+<tr>
+<td>5V + GND 排针</td>
+<td>从 5V 和 GND 引脚供电</td>
+</tr>
+<tr>
+<td>3.3V + GND 排针</td>
+<td>直接给 3.3V 引脚供电</td>
+</tr>
+</tbody></table>
+<blockquote>⚠️ 所有 I/O 为 3.3V 电平，<strong>不兼容 5V</strong>。仅 5V 引脚可直接接 5V 电源。</blockquote>
+<p>---</p>
+<h2 id="六、版本辨别">六、版本辨别</h2>
+<p>市面上存在盗版合宙开发板，正版特征如下：</p>
+<ol>
+<li>Flash 芯片为<strong>紫光</strong>或<strong>普冉</strong>品牌，盗版使用劣质二手芯片</li>
+<li>PCB 丝印清晰明显，盗版丝印细且模糊</li>
+<li>PCB 背面有板厂正规生产批次号</li>
+<li>背面网址完整（<code>luatos.com</code>）</li>
+<li>背面 Pin 脚丝印使用白底黑字</li>
+<li>沉金工艺精致</li>
+</ol>
+<p>---</p>
+<h2 id="七、相关链接">七、相关链接</h2>
+<ul>
+<li><a href="https://wiki.luatos.com/chips/esp32c3/board.html">合宙 Wiki — ESP32C3-CORE 开发板</a></li>
+<li><a href="http://www.wch.cn/downloads/CH343SER_EXE.html">CH343 驱动下载</a></li>
+<li><a href="https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_cn.pdf">乐鑫 ESP32-C3 技术规格书</a></li>
+<li><a href="https://luatos.com/t/esp32c3">合宙 ESP32-C3 产品页</a></li>
+</ul></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

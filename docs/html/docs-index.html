@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文档目录 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link active" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>文档目录</h1><p>由 Markdown 自动生成，适合快速学习、检索和浏览。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#一、用户使用">一、用户使用</a><a href="#二、开发与部署">二、开发与部署</a><a href="#三、架构与专项设计">三、架构与专项设计</a><a href="#四、学习资料">四、学习资料</a><a href="#五、销售与发布文案">五、销售与发布文案</a><a href="#合并与精简说明">合并与精简说明</a><a href="#维护规则">维护规则</a></div>
+<article class="content"><h1 id="文档目录">文档目录</h1>
+<blockquote>本目录按用途分类维护。优先从本文件进入，避免在多个文档之间重复查找。</blockquote>
+<h2 id="一、用户使用">一、用户使用</h2>
+<p>HTML 学习版入口：<a href="index.html">html/index.html</a></p>
+<table>
+<thead><tr>
+<th>文档</th>
+<th>用途</th>
+<th>适合读者</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="user-manual.html">user-manual.md</a></td>
+<td>完整用户手册：硬件、按钮、配网、OTA、FAQ</td>
+<td>普通用户、测试人员</td>
+</tr>
+<tr>
+<td><a href="esp32c3-board-guide.html">esp32c3-board-guide.md</a></td>
+<td>合宙 CORE ESP32-C3 开发板硬件参考</td>
+<td>硬件接线、排障</td>
+</tr>
+</tbody></table>
+<h2 id="二、开发与部署">二、开发与部署</h2>
+<table>
+<thead><tr>
+<th>文档</th>
+<th>用途</th>
+<th>适合读者</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="firmware-build.html">firmware-build.md</a></td>
+<td>MicroPython 固件编译、冻结模块、烧录</td>
+<td>开发者、发版人员</td>
+</tr>
+<tr>
+<td><a href="robot-deploy.html">robot-deploy.md</a></td>
+<td>自动部署脚本、异常处理、监控页面</td>
+<td>AI Agent、开发者</td>
+</tr>
+<tr>
+<td><a href="release-template.html">release-template.md</a></td>
+<td>CHANGELOG 与 Gitee Release 填空模板</td>
+<td>发版人员</td>
+</tr>
+</tbody></table>
+<h2 id="三、架构与专项设计">三、架构与专项设计</h2>
+<table>
+<thead><tr>
+<th>文档</th>
+<th>用途</th>
+<th>适合读者</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="ota-update-design.html">ota-update-design.md</a></td>
+<td>OTA 方案设计、版本清单、回滚、API、测试计划</td>
+<td>架构设计、维护者</td>
+</tr>
+<tr>
+<td><a href="esp32c3-optimization.html">esp32c3-optimization.md</a></td>
+<td>ESP32-C3 MicroPython 内存、BLE/WiFi、Socket 优化</td>
+<td>性能优化、问题排查</td>
+</tr>
+</tbody></table>
+<h2 id="四、学习资料">四、学习资料</h2>
+<table>
+<thead><tr>
+<th>文档</th>
+<th>用途</th>
+<th>适合读者</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="learning-path.html">learning-path.md</a></td>
+<td>课程式学习路线：从硬件到 BLE/WiFi/OTA/工程化</td>
+<td>新开发者、课程整理</td>
+</tr>
+<tr>
+<td><a href="open-source-references.html">open-source-references.md</a></td>
+<td>相关开源项目参考与学习方向</td>
+<td>技术调研、进阶学习</td>
+</tr>
+<tr>
+<td><a href="spec-coding-insights.html">spec-coding-insights.md</a></td>
+<td>Spec Coding 与 AI Coding Harness 实践总结</td>
+<td>AI 工程化学习</td>
+</tr>
+</tbody></table>
+<h2 id="五、销售与发布文案">五、销售与发布文案</h2>
+<table>
+<thead><tr>
+<th>文档</th>
+<th>用途</th>
+<th>适合读者</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="sales-listing.html">sales-listing.md</a></td>
+<td>闲鱼商品文案 + 发布规则 + 图片建议</td>
+<td>商品发布</td>
+</tr>
+</tbody></table>
+<h2 id="合并与精简说明">合并与精简说明</h2>
+<ul>
+<li><code>sales-listing.md</code> 与原 <code>xianyu-reference.md</code> 内容高度相关，已合并为单文件，避免“文案”和“规则”分散维护。</li>
+<li><code>user-manual.md</code> 与 <code>esp32c3-board-guide.md</code> 都包含硬件信息，但定位不同：前者面向用户，后者面向硬件参考，保留分离。</li>
+<li><code>firmware-build.md</code> 与 <code>robot-deploy.md</code> 都涉及部署，但定位不同：前者关注编译烧录，后者关注自动部署和脚本流程，保留分离。</li>
+<li><code>ota-update-design.md</code> 与 <code>release-template.md</code> 都涉及发版，但定位不同：前者是 OTA 架构设计，后者是发版填空模板，保留分离。</li>
+</ul>
+<h2 id="维护规则">维护规则</h2>
+<ul>
+<li>新增文档时，必须在本目录索引中登记分类。</li>
+<li>文档内容如果跨两类重复，优先保留“源头文档”，其他文档只保留链接。</li>
+<li>面向用户的操作说明放入 <code>user-manual.md</code>，面向开发者的实现细节放入专项设计文档。</li>
+<li>面向课程学习的资料统一补充到 <code>learning-path.md</code> 或从该文档链接出去。</li>
+</ul></article>
+<div class="footer">Generated for BikePower · docs/html</div>
+</main>
+</div>
+</body>
+</html>

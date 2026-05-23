@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BikePower 用户使用手册 - BikePower 学习文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h1>BikePower 学习文档</h1>
+<p class="subtitle">课程讲义版 · HTML</p>
+<div class="nav-group">
+<div class="nav-title">文档导航</div>
+<a class="nav-link" href="index.html">学习首页</a>
+<a class="nav-link" href="docs-index.html">文档目录</a>
+<a class="nav-link" href="esp32c3-board-guide.html">合宙 CORE ESP32-C3 开发板硬件参考</a>
+<a class="nav-link" href="esp32c3-optimization.html">ESP32-C3 MicroPython 优化技巧与最佳实践</a>
+<a class="nav-link" href="firmware-build.html">ESP32-C3 MicroPython 固件编译打包指南</a>
+<a class="nav-link" href="learning-path.html">BikePower 课程学习路线</a>
+<a class="nav-link" href="open-source-references.html">相关优秀开源项目参考</a>
+<a class="nav-link" href="ota-update-design.html">v1.9.0 OTA 固件更新设计文档</a>
+<a class="nav-link" href="release-template.html">标准发版模板</a>
+<a class="nav-link" href="robot-deploy.html">Robot 部署指南</a>
+<a class="nav-link" href="sales-listing.html">闲鱼商品发布文案</a>
+<a class="nav-link" href="spec-coding-insights.html">Spec Coding 实践启示</a>
+<a class="nav-link active" href="user-manual.html">BikePower 用户使用手册</a>
+</div>
+</aside>
+<main class="main">
+<section class="hero"><h1>BikePower 用户使用手册</h1><p>图文版用户手册，覆盖连接、配网、OTA、故障恢复和技术规格。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#1.-产品简介">1. 产品简介</a><a href="#2.-硬件说明">2. 硬件说明</a><a href="#3.-快速开始">3. 快速开始</a><a href="#4.-led-状态说明">4. LED 状态说明</a><a href="#5.-wifi-配网与参数配置">5. WiFi 配网与参数配置</a><a href="#6.-ota-固件更新">6. OTA 固件更新</a><a href="#7.-常见问题">7. 常见问题</a><a href="#8.-技术规格">8. 技术规格</a><a href="#9.-支持的骑行软件">9. 支持的骑行软件</a><a href="#10.-故障恢复">10. 故障恢复</a><a href="#11.-相关资料">11. 相关资料</a></div>
+<article class="content"><h1 id="bikepower-用户使用手册">BikePower 用户使用手册</h1>
+<blockquote>
+<p>适用设备：合宙 CORE ESP32-C3 蓝牙功率计模拟器</p>
+<p>适用固件：v1.9.4+</p>
+<p>适用人群：骑行软件用户、测试人员、开发调试人员</p>
+</blockquote>
+<h2 id="1.-产品简介">1. 产品简介</h2>
+<p>BikePower 是一个基于 ESP32-C3 的蓝牙功率计模拟器，可向骑行 App 模拟输出功率、踏频和心率数据。它适合室内骑行训练、骑行软件联调、BLE 功率计协议学习和演示。</p>
+<table>
+<thead><tr><th>能力</th><th>说明</th></tr></thead><tbody>
+<tr><td>蓝牙功率计</td><td>模拟 Cycling Power Service，输出 0-2000W 功率数据</td></tr>
+<tr><td>心率模拟</td><td>模拟 Heart Rate Service，输出 60-200 BPM 心率数据</td></tr>
+<tr><td>踏频模拟</td><td>通过曲轴转数和时间戳模拟 20-120 RPM 踏频</td></tr>
+<tr><td>按钮控制</td><td>短按降低功率，中按提高功率，长按进入配网确认</td></tr>
+<tr><td>WiFi 配网</td><td>通过手机浏览器配置功率、踏频、心率和家庭 WiFi</td></tr>
+<tr><td>OTA 更新</td><td>配网后在线检查版本，下载差异文件并自动回滚保护</td></tr>
+<tr><td>LED 指示</td><td>用 D4 LED 显示广播、连接、确认、配网和 OTA 状态</td></tr>
+</tbody></table>
+<blockquote>
+<p>注意：本设备输出的是模拟数据，不是实测功率，不能替代真实功率计用于正式训练评估或比赛数据记录。</p>
+</blockquote>
+<h3 id="1.1-第一次使用检查清单">1.1 第一次使用检查清单</h3>
+<table>
+<thead><tr><th>步骤</th><th>检查项</th><th>正常现象</th></tr></thead><tbody>
+<tr><td>供电</td><td>Type-C 线缆连接稳定</td><td>D4 LED 开始慢闪</td></tr>
+<tr><td>蓝牙</td><td>骑行 App 搜索传感器</td><td>看到 <code>BikePower</code></td></tr>
+<tr><td>连接</td><td>选择功率计服务</td><td>D4 LED 常亮</td></tr>
+<tr><td>数据</td><td>进入骑行页面</td><td>显示功率、踏频和心率</td></tr>
+<tr><td>调节</td><td>短按或中按 BOOT</td><td>功率每次变化 10W</td></tr>
+</tbody></table>
+<p>如果某一步不符合预期，请先按 RESET 重启，再参考第 7 节常见问题排查。</p>
+<h2 id="2.-硬件说明">2. 硬件说明</h2>
+<h3 id="2.1-开发板外观">2.1 开发板外观</h3>
+<p><img src="../../images/esp32c3-front.jpg" alt="合宙 CORE ESP32-C3 开发板正面"></p>
+<h3 id="2.2-引脚参考">2.2 引脚参考</h3>
+<p><img src="../../images/esp32c3-pinout.jpg" alt="合宙 CORE ESP32-C3 引脚功能及分布"></p>
+<table>
+<thead><tr><th>硬件</th><th>项目使用</th><th>说明</th></tr></thead><tbody>
+<tr><td>BOOT 按钮</td><td>GPIO9</td><td>调节功率、进入配网确认窗口</td></tr>
+<tr><td>D4 LED</td><td>GPIO12</td><td>状态指示灯，高电平点亮</td></tr>
+<tr><td>Type-C</td><td>供电/烧录</td><td>推荐使用 Type-C 供电</td></tr>
+<tr><td>RESET</td><td>重启设备</td><td>异常时可手动重启</td></tr>
+</tbody></table>
+<h3 id="2.3-供电注意事项">2.3 供电注意事项</h3>
+<ul>
+<li>推荐使用 Type-C USB 供电。</li>
+<li>如通过排针供电，请确认电压和接线正确。</li>
+<li>所有 GPIO 都是 3.3V 电平，不能直接接入 5V 信号。</li>
+</ul>
+<h2 id="3.-快速开始">3. 快速开始</h2>
+<h3 id="3.1-上电">3.1 上电</h3>
+<ol>
+<li>使用 Type-C 数据线连接开发板和电脑、充电器或移动电源。</li>
+<li>等待 D4 LED 慢闪，表示设备正在蓝牙广播。</li>
+<li>如果 LED 不亮或没有状态变化，按一下 RESET 重启。</li>
+</ol>
+<h3 id="3.2-连接骑行-app">3.2 连接骑行 App</h3>
+<ol>
+<li>打开手机、电脑或骑行设备上的蓝牙。</li>
+<li>打开 Zwift、TrainerRoad、Onelap、GoldenCheetah 等骑行软件。</li>
+<li>在设备配对页面搜索 <code>BikePower</code>。</li>
+<li>连接功率计服务，按需连接心率服务。</li>
+<li>D4 LED 常亮后，表示已有蓝牙连接。</li>
+</ol>
+<p>不同 App 的入口名称可能不同，通常位于“传感器”“设备配对”“功率计”或“心率带”页面。不要在系统蓝牙设置里长期绑定设备，优先在骑行 App 内搜索并连接。</p>
+<h3 id="3.3-调节模拟功率">3.3 调节模拟功率</h3>
+<table>
+<thead><tr><th>操作</th><th>按住时长</th><th>功能</th></tr></thead><tbody>
+<tr><td>短按</td><td>小于 300ms</td><td>功率 -10W</td></tr>
+<tr><td>中按</td><td>300ms 到 2s</td><td>功率 +10W</td></tr>
+<tr><td>长按</td><td>大于等于 2s</td><td>进入配网确认窗口，LED 快闪</td></tr>
+<tr><td>确认</td><td>快闪窗口内再按一次</td><td>关闭蓝牙并启动 WiFi 配网</td></tr>
+</tbody></table>
+<h2 id="4.-led-状态说明">4. LED 状态说明</h2>
+<table>
+<thead><tr><th>状态</th><th>LED 行为</th><th>含义</th></tr></thead><tbody>
+<tr><td>蓝牙广播</td><td>慢闪，约 1 秒亮灭</td><td>等待骑行 App 连接</td></tr>
+<tr><td>蓝牙已连接</td><td>常亮</td><td>蓝牙连接正常</td></tr>
+<tr><td>配网确认</td><td>快闪，约 200ms 亮灭</td><td>等待二次确认进入 WiFi 配网</td></tr>
+<tr><td>WiFi 配网</td><td>熄灭</td><td>蓝牙已关闭，WiFi 热点已启动</td></tr>
+<tr><td>OTA 下载</td><td>双闪</td><td>正在下载固件，请勿断电</td></tr>
+</tbody></table>
+<blockquote>
+<p>ESP32-C3 上 WiFi 和 BLE 共用射频，本项目采用互斥模式。进入 WiFi 配网时会关闭蓝牙，配网完成或超时后设备会重启恢复蓝牙。</p>
+</blockquote>
+<p>如果 LED 状态和当前操作不一致，优先按 RESET 重启。BLE 硬件异常时，软件重启不一定能完全恢复，必要时请断电 5 秒后再上电。</p>
+<h2 id="5.-wifi-配网与参数配置">5. WiFi 配网与参数配置</h2>
+<h3 id="5.1-进入配网模式">5.1 进入配网模式</h3>
+<ol>
+<li>长按 BOOT 按钮 2 秒以上后松开。</li>
+<li>D4 LED 快闪，表示进入二次确认窗口。</li>
+<li>在确认窗口内再按一次 BOOT。</li>
+<li>设备关闭蓝牙并启动 <code>BikePower</code> WiFi 热点。</li>
+<li>手机或电脑连接 <code>BikePower</code> 热点。</li>
+<li>浏览器访问 <code>http://192.168.4.1</code>。</li>
+</ol>
+<blockquote>
+<p>安全提醒：<code>BikePower</code> 热点默认无密码，仅用于短时间配网。请在可信环境中操作，配网完成或 180 秒超时后设备会自动关闭 WiFi 并重启。</p>
+</blockquote>
+<h3 id="5.2-首页配置表单">5.2 首页配置表单</h3>
+<p><img src="../../images/page1_home.png" alt="配网页面首页"></p>
+<p>打开 <code>http://192.168.4.1</code> 后会直接进入配置表单，这是最常用的主流程。</p>
+<table>
+<thead><tr><th>区域</th><th>作用</th></tr></thead><tbody>
+<tr><td>功率、踏频、心率表单</td><td>直接修改骑行 App 看到的模拟数据</td></tr>
+<tr><td>配网 / OTA</td><td>右上角辅助入口，仅在需要 OTA 或保存家庭 WiFi 时使用</td></tr>
+<tr><td>倒计时</td><td>提醒当前配置窗口剩余时间，超时后设备自动重启恢复蓝牙</td></tr>
+</tbody></table>
+<h3 id="5.3-选择家庭-wifi">5.3 选择家庭 WiFi</h3>
+<p><img src="../../images/page2_wifi_scan.png" alt="WiFi 扫描选择"></p>
+<p>WiFi 扫描页会显示附近网络、信号强度和加密状态。建议选择信号强、稳定的 2.4GHz 网络。</p>
+<table>
+<thead><tr><th>显示项</th><th>说明</th></tr></thead><tbody>
+<tr><td>锁图标</td><td>表示网络是否需要密码</td></tr>
+<tr><td>dBm</td><td>信号强度，数值越接近 0 信号越强</td></tr>
+<tr><td>重新扫描</td><td>刷新附近 WiFi 列表</td></tr>
+</tbody></table>
+<h3 id="5.4-配置功率、踏频和心率">5.4 配置功率、踏频和心率</h3>
+<p><img src="../../images/page3_config.png" alt="参数配置页"></p>
+<table>
+<thead><tr><th>参数</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td>功率</td><td>0-2000W</td><td>200W</td><td>骑行 App 看到的模拟功率</td></tr>
+<tr><td>踏频</td><td>20-120 RPM</td><td>90 RPM</td><td>骑行 App 计算出的踩踏频率</td></tr>
+<tr><td>心率</td><td>60-200 BPM</td><td>140 BPM</td><td>心率服务输出值</td></tr>
+</tbody></table>
+<p>配置完成后点击“保存并重启”。设备会写入配置文件，并在约 5 秒后自动重启，重启后恢复蓝牙广播。</p>
+<p>配置值超出范围时会被限制到允许区间。建议先保存较小改动，确认骑行 App 显示正常后再继续调整。</p>
+<h3 id="5.5-保存成功">5.5 保存成功</h3>
+<p><img src="../../images/page5_success.png" alt="配置保存成功页"></p>
+<p>保存成功页会显示已保存的参数和重启倒计时。倒计时期间不要断电，等待设备自动恢复蓝牙即可。</p>
+<h2 id="6.-ota-固件更新">6. OTA 固件更新</h2>
+<h3 id="6.1-检查更新">6.1 检查更新</h3>
+<p>设备连接家庭 WiFi 后，会读取稳定版本清单 <code>releases/latest/version.json</code>。如果发现新版本，配置页会出现更新提示。</p>
+<p><img src="../../images/page4_update_available.png" alt="有更新提示"></p>
+<h3 id="6.2-执行更新">6.2 执行更新</h3>
+<ol>
+<li>确认设备已连接家庭 WiFi。</li>
+<li>在更新横幅中点击“立即更新”。</li>
+<li>保持设备供电，等待文件下载和校验完成。</li>
+<li>下载完成后设备自动重启。</li>
+<li>重启后如校验通过，进入新版本；如校验失败，自动回滚旧版本。</li>
+</ol>
+<p><img src="../../images/page6_update_progress.png" alt="固件更新页"></p>
+<h3 id="6.3-ota-注意事项">6.3 OTA 注意事项</h3>
+<ul>
+<li>OTA 下载期间请勿断电。</li>
+<li>OTA 下载期间 WiFi 关闭计时器会暂停，下载完成或失败后再继续恢复流程。</li>
+<li>更新失败时系统会保留 <code>.bak</code> 备份并自动回滚。</li>
+<li>如果多次更新失败，请检查家庭 WiFi、网络访问和版本清单是否可用。</li>
+<li>如果页面一直停留在下载状态，请等待 1 分钟后刷新；仍无变化时按 RESET 重启并重新检查更新。</li>
+</ul>
+<h2 id="7.-常见问题">7. 常见问题</h2>
+<h3 id="7.1-搜索不到-bikepower">7.1 搜索不到 <code>BikePower</code></h3>
+<p>可能原因和处理方式：</p>
+<table>
+<thead><tr><th>原因</th><th>处理方式</th></tr></thead><tbody>
+<tr><td>设备未上电</td><td>检查 Type-C 供电，按 RESET 重启</td></tr>
+<tr><td>当前处于 WiFi 配网模式</td><td>等待超时重启，或手动 RESET</td></tr>
+<tr><td>手机蓝牙缓存异常</td><td>关闭再打开蓝牙，重新搜索</td></tr>
+<tr><td>骑行 App 未扫描功率计</td><td>在功率计/传感器配对页面重新搜索</td></tr>
+</tbody></table>
+<p>部分手机会缓存旧蓝牙设备信息。如果反复搜索失败，可以关闭骑行 App、关闭系统蓝牙 10 秒，再重新打开 App 搜索。</p>
+<h3 id="7.2-蓝牙连接后没有数据">7.2 蓝牙连接后没有数据</h3>
+<p>请确认：</p>
+<ul>
+<li>D4 LED 是否常亮。</li>
+<li>骑行 App 是否连接的是功率计服务，而不是普通蓝牙列表里的设备。</li>
+<li>当前功率是否大于 0，可通过中按 BOOT 增加功率。</li>
+<li>如果仍无数据，按 RESET 重启设备后重新连接。</li>
+</ul>
+<h3 id="7.3-无法打开-192.168.4.1">7.3 无法打开 <code>192.168.4.1</code></h3>
+<p>请确认：</p>
+<ul>
+<li>手机或电脑已连接 <code>BikePower</code> 热点。</li>
+<li>当前 LED 处于熄灭状态，表示设备在 WiFi 配网模式。</li>
+<li>浏览器地址输入的是 <code>http://192.168.4.1</code>，不是 <code>https://</code>。</li>
+<li>若 180 秒超时，设备会自动重启恢复蓝牙，需要重新进入配网。</li>
+</ul>
+<h3 id="7.4-配置保存后没有生效">7.4 配置保存后没有生效</h3>
+<p>请确认：</p>
+<ul>
+<li>保存后看到“配置已保存”页面。</li>
+<li>倒计时结束前没有断电。</li>
+<li>设备重启后重新连接 <code>BikePower</code> 蓝牙。</li>
+<li>参数范围合法，超出范围会被限制到允许区间。</li>
+</ul>
+<h3 id="7.5-ota-失败怎么办">7.5 OTA 失败怎么办</h3>
+<table>
+<thead><tr><th>现象</th><th>处理方式</th></tr></thead><tbody>
+<tr><td>下载失败</td><td>检查家庭 WiFi，重新进入配网页面后重试</td></tr>
+<tr><td>版本检查失败</td><td>确认网络可访问 Gitee Raw 版本清单</td></tr>
+<tr><td>更新后启动异常</td><td>等待自动回滚，必要时按 RESET 重启</td></tr>
+<tr><td>多次失败</td><td>使用 USB 重新烧录全量固件</td></tr>
+</tbody></table>
+<h3 id="7.6-什么时候需要-usb-重新烧录">7.6 什么时候需要 USB 重新烧录</h3>
+<table>
+<thead><tr><th>场景</th><th>是否建议烧录</th><th>说明</th></tr></thead><tbody>
+<tr><td>正常 OTA 失败一次</td><td>否</td><td>先重试 OTA，通常是网络问题</td></tr>
+<tr><td>OTA 后无法恢复蓝牙</td><td>是</td><td>可能文件系统或固件状态异常</td></tr>
+<tr><td>忘记设备配置</td><td>否</td><td>重新进入配网覆盖保存即可</td></tr>
+<tr><td>设备完全无响应</td><td>是</td><td>先换线和按 RESET，仍无效再烧录</td></tr>
+</tbody></table>
+<h2 id="8.-技术规格">8. 技术规格</h2>
+<h3 id="8.1-蓝牙规格">8.1 蓝牙规格</h3>
+<table>
+<thead><tr><th>项目</th><th>参数</th></tr></thead><tbody>
+<tr><td>蓝牙版本</td><td>Bluetooth LE 5.0</td></tr>
+<tr><td>功率服务</td><td>Cycling Power Service，UUID <code>0x1818</code></td></tr>
+<tr><td>功率特征</td><td>Cycling Power Measurement，UUID <code>0x2A63</code></td></tr>
+<tr><td>心率服务</td><td>Heart Rate Service，UUID <code>0x180D</code></td></tr>
+<tr><td>心率特征</td><td>Heart Rate Measurement，UUID <code>0x2A37</code></td></tr>
+<tr><td>通知间隔</td><td>1000ms</td></tr>
+<tr><td>MTU</td><td>69 字节</td></tr>
+</tbody></table>
+<h3 id="8.2-wifi-规格">8.2 WiFi 规格</h3>
+<table>
+<thead><tr><th>项目</th><th>参数</th></tr></thead><tbody>
+<tr><td>模式</td><td>AP 配网模式</td></tr>
+<tr><td>热点名称</td><td><code>BikePower</code></td></tr>
+<tr><td>热点密码</td><td>无</td></tr>
+<tr><td>配网页面</td><td><code>http://192.168.4.1</code></td></tr>
+<tr><td>配网超时</td><td>180 秒</td></tr>
+<tr><td>OTA 计时</td><td>下载期间暂停 180 秒配网关闭计时</td></tr>
+<tr><td>Socket 限制</td><td>最多同时 3 个连接</td></tr>
+</tbody></table>
+<h3 id="8.3-数据范围">8.3 数据范围</h3>
+<table>
+<thead><tr><th>数据</th><th>范围</th><th>默认值</th></tr></thead><tbody>
+<tr><td>功率</td><td>0-2000W</td><td>200W</td></tr>
+<tr><td>踏频</td><td>20-120 RPM</td><td>90 RPM</td></tr>
+<tr><td>心率</td><td>60-200 BPM</td><td>140 BPM</td></tr>
+</tbody></table>
+<h2 id="9.-支持的骑行软件">9. 支持的骑行软件</h2>
+<table>
+<thead><tr><th>软件</th><th>平台</th><th>功率</th><th>心率</th></tr></thead><tbody>
+<tr><td>Zwift</td><td>Windows / macOS / iOS / Android</td><td>支持</td><td>支持</td></tr>
+<tr><td>TrainerRoad</td><td>Windows / macOS / iOS / Android</td><td>支持</td><td>支持</td></tr>
+<tr><td>Onelap</td><td>Windows / macOS / iOS / Android</td><td>支持</td><td>支持</td></tr>
+<tr><td>GoldenCheetah</td><td>Windows / macOS / Linux</td><td>支持</td><td>支持</td></tr>
+<tr><td>Wahoo Fitness</td><td>iOS / Android</td><td>支持</td><td>支持</td></tr>
+</tbody></table>
+<h2 id="10.-故障恢复">10. 故障恢复</h2>
+<table>
+<thead><tr><th>场景</th><th>建议操作</th></tr></thead><tbody>
+<tr><td>蓝牙异常或报 <code>[Errno 5] EIO</code></td><td>按 RESET 或断电重启</td></tr>
+<tr><td>配网过程中卡住</td><td>等待超时重启，或按 RESET</td></tr>
+<tr><td>配置损坏</td><td>删除 <code>power_config.json</code> 后重启</td></tr>
+<tr><td>WiFi 凭据错误</td><td>重新进入配网并覆盖保存</td></tr>
+<tr><td>OTA 多次失败</td><td>使用 USB 全量烧录固件</td></tr>
+</tbody></table>
+<h2 id="11.-相关资料">11. 相关资料</h2>
+<ul>
+<li><a href="README.html">文档目录</a></li>
+<li><a href="learning-path.html">课程学习路线</a></li>
+<li><a href="firmware-build.html">固件编译打包指南</a></li>
+<li><a href="ota-update-design.html">OTA 固件更新设计</a></li>
+<li><a href="esp32c3-board-guide.html">合宙 ESP32-C3 开发板硬件参考</a></li>
+</ul>
+<p>---</p>
+<p><strong>文档版本</strong>：v1.9.4  </p>
+<p><strong>最后更新</strong>：2026-05-22  </p>
+<p><strong>适用固件版本</strong>：v1.9.4+  </p>
+<p><strong>本次更新</strong>：补齐第一次使用检查清单、App 连接提示、OTA 排障说明，并同步最新固件版本。</p></article>
+</main>
+</div>
+</body>
+</html>

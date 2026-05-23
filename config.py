@@ -1,0 +1,169 @@
+"""
+BikePower 蓝牙功率计 — 全局配置常量
+
+运行环境：MicroPython v1.28
+硬件约束详见 .trae/rules/hardware_constraints.md
+"""
+
+from micropython import const
+
+# ---- 硬件引脚 ----
+BTN_PIN = const(9)
+LED_PIN = const(12)
+
+# ---- BLE 事件码 ----
+IRQ_CENTRAL_CONNECT = const(1)
+IRQ_CENTRAL_DISCONNECT = const(2)
+
+# ---- BLE 服务 / 特征 UUID ----
+POWER_SERVICE_UUID = const(0x1818)
+HR_SERVICE_UUID = const(0x180D)
+CSC_SERVICE_UUID = const(0x1816)
+FTMS_SERVICE_UUID = const(0x1826)
+DIS_SERVICE_UUID = const(0x180A)
+POWER_CHAR_UUID = const(0x2A63)
+HR_CHAR_UUID = const(0x2A37)
+CSC_CHAR_UUID = const(0x2A5B)
+FTMS_FEATURE_CHAR_UUID = const(0x2ACC)
+FTMS_CONTROL_POINT_CHAR_UUID = const(0x2AD9)
+FTMS_POWER_CHAR_UUID = const(0x2AD2)
+FTMS_STATUS_CHAR_UUID = const(0x2ADA)
+DIS_MANUFACTURER_CHAR_UUID = const(0x2A29)
+DIS_MODEL_CHAR_UUID = const(0x2A24)
+DIS_FIRMWARE_CHAR_UUID = const(0x2A26)
+
+# ---- BLE 连接上限 ----
+MAX_CONNECTIONS = const(3)
+
+# ---- BLE 广播间隔（毫秒）----
+BLE_ADVERTISING_INTERVAL = const(500)
+
+# ---- BLE 通知最小间隔（毫秒）----
+BLE_NOTIFY_INTERVAL = const(1000)
+BLE_NOTIFY_INTERVAL_PRIMARY = const(1000)
+BLE_NOTIFY_INTERVAL_SECONDARY = const(2000)
+
+# ---- 按钮时间阈值（毫秒）----
+SHORT_PRESS_MS = const(300)
+WIFI_BTN_HOLD_MS = const(2000)
+CONFIRM_WINDOW_MS = const(3000)
+
+# ---- LED 闪烁间隔（毫秒）----
+LED_BLINK_SLOW_MS = const(1000)
+LED_BLINK_FAST_MS = const(200)
+LED_BLINK_WIFI_MS = const(3000)
+
+# ---- WiFi 配置 ----
+WIFI_SSID = "BikePower"
+WIFI_IP = "192.168.4.1"
+WIFI_SUBNET = "255.255.255.0"
+WIFI_GATEWAY = "192.168.4.1"
+WIFI_DNS = "8.8.8.8"
+WIFI_PORT = const(80)
+WIFI_SHUTDOWN_MS = const(180_000)
+WIFI_CONFIG_FILE = "wifi_config.txt"
+POWER_CONFIG_FILE = "power_config.json"
+CONFIG_VERSION = const(2)
+
+# ---- 功率数据范围 ----
+POWER_MIN = const(0)
+POWER_MAX = const(2000)
+CADENCE_MIN = const(20)
+CADENCE_MAX = const(120)
+HR_MIN = const(60)
+HR_MAX = const(200)
+
+# ---- 功率默认值 ----
+DEFAULT_POWER = const(200)
+DEFAULT_CADENCE = const(90)
+DEFAULT_HEARTRATE = const(140)
+
+# ---- 数据波动范围 ----
+POWER_FLUCTUATION = (-10, 20)
+CADENCE_FLUCTUATION = (-3, 3)
+HR_FLUCTUATION = (-2, 2)
+
+# ---- 骑行模式 ----
+RIDE_MODE_STEADY = "steady"
+RIDE_MODE_ROAD = "road"
+RIDE_MODE_INTERVAL = "interval"
+RIDE_MODE_RANDOM = "random"
+DEFAULT_RIDE_MODE = RIDE_MODE_STEADY
+RIDE_MODES = (
+    RIDE_MODE_STEADY,
+    RIDE_MODE_ROAD,
+    RIDE_MODE_INTERVAL,
+    RIDE_MODE_RANDOM,
+)
+
+# ---- 固定功率模式参数 ----
+STEADY_POWER_FLUCTUATION = (-5, 5)
+STEADY_CADENCE_FLUCTUATION = (-2, 2)
+STEADY_HR_FLUCTUATION = (-1, 1)
+STEADY_HR_SMOOTH_PERCENT = const(95)
+
+# ---- 真实路骑模式参数 ----
+ROAD_HR_SMOOTH_PERCENT = const(90)
+ROAD_COAST_POWER = (0, 15)
+ROAD_COAST_CADENCE = (20, 28)
+ROAD_COAST_DURATION_MS = (3_000, 18_000)
+ROAD_COAST_HR_TARGET = const(140)
+ROAD_CRUISE_POWER = (130, 220)
+ROAD_CRUISE_CADENCE = (66, 90)
+ROAD_CRUISE_DURATION_MS = (5_000, 35_000)
+ROAD_CRUISE_HR_TARGET = const(158)
+ROAD_CLIMB_POWER = (235, 335)
+ROAD_CLIMB_CADENCE = (75, 93)
+ROAD_CLIMB_DURATION_MS = (4_000, 28_000)
+ROAD_CLIMB_HR_TARGET = const(166)
+ROAD_SURGE_POWER = (385, 480)
+ROAD_SURGE_CADENCE = (78, 100)
+ROAD_SURGE_DURATION_MS = (1_000, 8_000)
+ROAD_SURGE_HR_TARGET = const(170)
+ROAD_RECOVER_POWER = (55, 110)
+ROAD_RECOVER_CADENCE = (50, 88)
+ROAD_RECOVER_DURATION_MS = (2_000, 12_000)
+ROAD_RECOVER_HR_TARGET = const(150)
+
+# ---- 间歇训练模式参数 ----
+INTERVAL_WORK_MS = const(60_000)
+INTERVAL_RECOVERY_MS = const(120_000)
+INTERVAL_WORK_POWER = (285, 355)
+INTERVAL_WORK_CADENCE = (84, 96)
+INTERVAL_RECOVERY_POWER = (85, 145)
+INTERVAL_RECOVERY_CADENCE = (62, 84)
+INTERVAL_HR_SMOOTH_PERCENT = const(88)
+INTERVAL_WORK_HR_TARGET = const(174)
+INTERVAL_RECOVERY_HR_TARGET = const(148)
+
+# ---- 随机巡航模式参数 ----
+RANDOM_POWER_STEP = const(35)
+RANDOM_CADENCE_STEP = const(4)
+RANDOM_HR_SMOOTH_PERCENT = const(92)
+RANDOM_POWER_RANGE = (110, 300)
+RANDOM_CADENCE_RANGE = (65, 94)
+RANDOM_START_POWER = const(190)
+RANDOM_START_CADENCE = const(82)
+
+# ---- 看门狗 ----
+WDT_TIMEOUT_MS = const(5000)
+
+# ---- 设备名称 ----
+DEVICE_NAME = "BikePower"
+DEVICE_MANUFACTURER = "BikePower"
+DEVICE_MODEL = "ESP32-C3"
+
+# ---- 固件版本 ----
+FIRMWARE_VERSION = "2.0.1"
+MPY_VERSION = "v1.28"
+
+# ---- OTA 固件更新 ----
+OTA_VERSION_URL = "https://gitee.com/mengen4jv/esp32-power/raw/main/releases/latest/version.json"
+OTA_PENDING_FLAG = ".update_pending"
+OTA_VERSION_FILE = "ota_version.json"
+OTA_BACKUP_SUFFIX = ".bak"
+OTA_TEMP_SUFFIX = ".tmp"
+OTA_MPY_SUFFIX = ".mpy"
+OTA_DOWNLOAD_CHUNK = const(512)
+OTA_HTTP_TIMEOUT = const(10)
+OTA_MAX_REDIRECTS = const(3)

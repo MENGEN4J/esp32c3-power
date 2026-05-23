@@ -1,0 +1,15 @@
+micropython/
+esp-idf/
+target/
+.DS_Store
+__pycache__/
+*.pyc
+config_*
+wifi_config.txt
+power_config.json
+test/reports/
+feishu_config.json*
+version/
+*-ota.zip
+releases/test/
+.env
