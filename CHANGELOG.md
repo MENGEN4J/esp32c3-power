@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v2.0.2 Release (2026-05-23)
 
-- **GitHub OTA 源切换**：`config.OTA_VERSION_URL` 改为 GitHub Raw 稳定入口，`releases/latest/version.json` 中当前 v2.0.1 OTA 文件 URL 同步改为 GitHub tag raw 路径
+- **GitHub OTA 源切换**：`config.OTA_VERSION_URL` 改为 GitHub Raw 稳定入口，`releases/latest/version.json` 中当前 v2.0.2 OTA 文件 URL 同步改为 GitHub tag raw 路径
 - **GitHub OTA 打包脚本**：`scripts/gen_version_json.py` 改用 `--github-owner/--github-repo` 生成 GitHub Raw URL
 - **GitHub Release 发布脚本**：新增 `scripts/create_github_release.py`，替换旧 Gitee Release API 脚本，支持创建/更新 Release、刷新同名附件并上传 `firmware.bin`、OTA zip 和 `version.json`
 - **发版文档同步**：README、OTA 规格、发版模板、固件构建文档和 HTML 讲义同步 GitHub 发布流程
+- **版本号升至 2.0.2**：`config.FIRMWARE_VERSION` 更新为 `2.0.2`
 
 ### 测试报告
 
