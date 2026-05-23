@@ -30,7 +30,7 @@
 </aside>
 <main class="main">
 <section class="hero"><h1>v1.9.0 OTA 固件更新设计文档</h1><p>OTA 版本清单、下载、校验、回滚和内存预算设计。</p></section>
-<div class="toc"><strong>本页目录</strong><a href="#1.-背景与目标">1. 背景与目标</a><a href="#2.-方案选型">2. 方案选型</a><a href="#3.-整体架构">3. 整体架构</a><a href="#4.-版本清单格式">4. 版本清单格式</a><a href="#5.-新增模块：otaupdater.py">5. 新增模块：ota_updater.py</a><a href="#6.-boot.py-安全回滚">6. boot.py 安全回滚</a><a href="#7.-用户交互流程">7. 用户交互流程</a><a href="#8.-页面设计">8. 页面设计</a><a href="#9.-api-路由设计">9. API 路由设计</a><a href="#10.-config.py-新增常量">10. config.py 新增常量</a><a href="#11.-内存预算">11. 内存预算</a><a href="#12.-高可用保障机制">12. 高可用保障机制</a><a href="#13.-gitee-仓库目录结构">13. Gitee 仓库目录结构</a><a href="#14.-新增/修改文件清单">14. 新增/修改文件清单</a><a href="#15.-wifi-sta-+-ap-共存">15. WiFi STA + AP 共存</a><a href="#16.-代码保护与托管格式">16. 代码保护与托管格式</a><a href="#17.-已知限制">17. 已知限制</a><a href="#18.-测试计划">18. 测试计划</a></div>
+<div class="toc"><strong>本页目录</strong><a href="#1.-背景与目标">1. 背景与目标</a><a href="#2.-方案选型">2. 方案选型</a><a href="#3.-整体架构">3. 整体架构</a><a href="#4.-版本清单格式">4. 版本清单格式</a><a href="#5.-新增模块：otaupdater.py">5. 新增模块：ota_updater.py</a><a href="#6.-boot.py-安全回滚">6. boot.py 安全回滚</a><a href="#7.-用户交互流程">7. 用户交互流程</a><a href="#8.-页面设计">8. 页面设计</a><a href="#9.-api-路由设计">9. API 路由设计</a><a href="#10.-config.py-新增常量">10. config.py 新增常量</a><a href="#11.-内存预算">11. 内存预算</a><a href="#12.-高可用保障机制">12. 高可用保障机制</a><a href="#13.-github-仓库目录结构">13. GitHub 仓库目录结构</a><a href="#14.-新增/修改文件清单">14. 新增/修改文件清单</a><a href="#15.-wifi-sta-+-ap-共存">15. WiFi STA + AP 共存</a><a href="#16.-代码保护与托管格式">16. 代码保护与托管格式</a><a href="#17.-已知限制">17. 已知限制</a><a href="#18.-测试计划">18. 测试计划</a></div>
 <article class="content"><h1 id="v1.9.0-ota-固件更新设计文档">v1.9.0 OTA 固件更新设计文档</h1>
 <blockquote>
 <p>BikePower ESP32-C3 蓝牙功率计 — 配网后一键检查并更新固件版本</p>
@@ -48,7 +48,7 @@
 <li>用户配网后，设备自动检查是否有新版本</li>
 <li>发现新版本时，用户在 Web 页面点击即可完成更新</li>
 <li>更新失败时设备可自动回滚，不会变砖</li>
-<li>版本托管在 Gitee，国内访问稳定，无需自建服务器</li>
+<li>版本托管在 GitHub，国内访问稳定，无需自建服务器</li>
 </ul>
 <h3 id="1.3-约束">1.3 约束</h3>
 <table>
@@ -87,7 +87,7 @@
 <p>---</p>
 <h2 id="3.-整体架构">3. 整体架构</h2>
 <pre><code>┌─────────────────────────────────────────────────────────────┐
-│                      Gitee 仓库                              │
+│                      GitHub 仓库                              │
 │  releases/latest/version.json  ← 版本清单（版本号+文件哈希）   │
 │  v1.9.0/app.py                ← 变更文件                     │
 │  v1.9.0/wifi_manager.py       ← 变更文件                     │
@@ -111,7 +111,7 @@
 └─────────────────────────────────────────────────────────────┘</code></pre>
 <p>---</p>
 <h2 id="4.-版本清单格式">4. 版本清单格式</h2>
-<p>托管在 Gitee 仓库的 <code>releases/latest/version.json</code>：</p>
+<p>托管在 GitHub 仓库的 <code>releases/latest/version.json</code>：</p>
 <pre><code class="language-json">{
   &quot;version&quot;: &quot;1.9.0&quot;,
   &quot;min_version&quot;: &quot;1.8.0&quot;,
@@ -121,13 +121,13 @@
       &quot;name&quot;: &quot;app.py&quot;,
       &quot;hash&quot;: &quot;a1b2c3d4&quot;,
       &quot;size&quot;: 5234,
-      &quot;url&quot;: &quot;https://gitee.com/user/esp32-power/raw/v1.9.0/app.py&quot;
+      &quot;url&quot;: &quot;https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v1.9.0/app.py&quot;
     },
     {
       &quot;name&quot;: &quot;wifi_manager.py&quot;,
       &quot;hash&quot;: &quot;e5f6g7h8&quot;,
       &quot;size&quot;: 14820,
-      &quot;url&quot;: &quot;https://gitee.com/user/esp32-power/raw/v1.9.0/wifi_manager.py&quot;
+      &quot;url&quot;: &quot;https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v1.9.0/wifi_manager.py&quot;
     }
   ]
 }</code></pre>
@@ -141,13 +141,13 @@
 <tr><td><code>files[].name</code></td><td>string</td><td>文件名（相对于设备根目录）</td></tr>
 <tr><td><code>files[].hash</code></td><td>string</td><td>CRC32 哈希值，用于判断是否需要下载和校验完整性</td></tr>
 <tr><td><code>files[].size</code></td><td>int</td><td>文件大小（字节），用于进度显示</td></tr>
-<tr><td><code>files[].url</code></td><td>string</td><td>Gitee Raw 文件直链</td></tr>
+<tr><td><code>files[].url</code></td><td>string</td><td>GitHub Raw 文件直链</td></tr>
 </tbody></table>
 <p>---</p>
 <h2 id="5.-新增模块：otaupdater.py">5. 新增模块：ota_updater.py</h2>
 <h3 id="5.1-职责">5.1 职责</h3>
 <ul>
-<li>从 Gitee 获取 <code>version.json</code></li>
+<li>从 GitHub 获取 <code>version.json</code></li>
 <li>对比本地文件 CRC32 哈希，确定需更新的文件列表</li>
 <li>逐文件下载 → 写入临时文件 → 校验哈希 → 原子替换</li>
 <li>设置更新标志，触发重启</li>
@@ -202,7 +202,7 @@ download_update(version_info)
 <ul>
 <li>HTTP 响应头与 body 以 <code>\r\n\r\n</code> 分隔，需先跳过头部</li>
 <li>设置 socket 超时 10 秒，防止卡死</li>
-<li>Gitee Raw URL 会 302 重定向，需处理重定向（最多 3 次）</li>
+<li>GitHub Raw URL 会 302 重定向，需处理重定向（最多 3 次）</li>
 <li>每次下载完成后立即 <code>sock.close()</code>，释放 socket 资源</li>
 </ul>
 <p>---</p>
@@ -391,7 +391,7 @@ download_update(version_info)
 <p>---</p>
 <h2 id="10.-config.py-新增常量">10. config.py 新增常量</h2>
 <pre><code class="language-python">FIRMWARE_VERSION = &quot;1.9.4&quot;
-OTA_VERSION_URL = &quot;https://gitee.com/mengen4jv/esp32-power/raw/main/releases/latest/version.json&quot;
+OTA_VERSION_URL = &quot;https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/main/releases/latest/version.json&quot;
 OTA_PENDING_FLAG = &quot;.update_pending&quot;
 OTA_VERSION_FILE = &quot;ota_version.json&quot;
 OTA_BACKUP_SUFFIX = &quot;.bak&quot;
@@ -403,7 +403,7 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 <table>
 <thead><tr><th>常量</th><th>说明</th></tr></thead><tbody>
 <tr><td><code>FIRMWARE_VERSION</code></td><td>当前固件版本号，每次发版时更新</td></tr>
-<tr><td><code>OTA_VERSION_URL</code></td><td>version.json 的 Gitee Raw 地址</td></tr>
+<tr><td><code>OTA_VERSION_URL</code></td><td>version.json 的 GitHub Raw 地址</td></tr>
 <tr><td><code>OTA_PENDING_FLAG</code></td><td>更新待校验标志文件名</td></tr>
 <tr><td><code>OTA_VERSION_FILE</code></td><td>本机 OTA 后写入的版本记录文件</td></tr>
 <tr><td><code>OTA_BACKUP_SUFFIX</code></td><td>旧文件备份后缀</td></tr>
@@ -433,7 +433,7 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 <tr><td>更新后无法启动</td><td>boot.py <code>__import__</code> 校验，失败自动从 <code>.bak</code> 回滚</td><td>自动回滚到旧版本</td></tr>
 <tr><td>回滚也失败</td><td>保留 <code>.bak</code> 文件</td><td>用户通过 USB 串口手动恢复</td></tr>
 <tr><td>version.json 解析失败</td><td>try/except 捕获，OTA 功能降级为不可用</td><td>正常功能不受影响</td></tr>
-<tr><td>Gitee 不可达</td><td>HTTP 超时 10 秒，超时后跳过更新检查</td><td>正常功能不受影响</td></tr>
+<tr><td>GitHub 不可达</td><td>HTTP 超时 10 秒，超时后跳过更新检查</td><td>正常功能不受影响</td></tr>
 <tr><td>跨大版本升级</td><td><code>min_version</code> 字段限制</td><td>提示需 USB 升级</td></tr>
 <tr><td>WiFi 断开</td><td>下载线程异常退出</td><td>不影响主循环和配置页面</td></tr>
 <tr><td>WiFi 超时关闭</td><td>用户点击更新时暂停计时器</td><td>更新完成/失败后恢复计时器</td></tr>
@@ -450,8 +450,8 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 回滚后: boot.py 回滚完成后删除标志文件</code></pre>
 <p>标志文件存在 = 上次更新未完成校验，boot.py 需要介入。</p>
 <p>---</p>
-<h2 id="13.-gitee-仓库目录结构">13. Gitee 仓库目录结构</h2>
-<pre><code>esp32-power/                        ← Gitee 仓库
+<h2 id="13.-github-仓库目录结构">13. GitHub 仓库目录结构</h2>
+<pre><code>esp32c3-power/                        ← GitHub 仓库
 ├── releases/
 │   └── latest/
 │       └── version.json            ← 永远指向最新版本
@@ -470,13 +470,13 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 <li>创建 git tag <code>v1.9.0</code></li>
 <li>将变更文件复制到 <code>v1.9.0/</code> 目录</li>
 <li>生成各文件 CRC32 哈希，更新 <code>releases/latest/version.json</code></li>
-<li>推送到 Gitee</li>
+<li>推送到 GitHub</li>
 </ol>
 <h3 id="13.2-version.json-生成脚本">13.2 version.json 生成脚本</h3>
 <p>可在 <code>scripts/</code> 目录新增 <code>gen_version_json.py</code>，自动计算文件哈希并生成 version.json：</p>
 <pre><code class="language-bash">python3 scripts/gen_version_json.py --version 1.9.0 --min-version 1.8.0 \
   --files app.py wifi_manager.py web_pages.py \
-  --gitee-user user --gitee-repo esp32-power</code></pre>
+  --github-owner MENGEN4J --github-repo esp32c3-power</code></pre>
 <p>---</p>
 <h2 id="14.-新增/修改文件清单">14. 新增/修改文件清单</h2>
 <table>
@@ -511,7 +511,7 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 <p>当前 OTA 托管原始 <code>.py</code> 源码，存在三个问题：</p>
 <table>
 <thead><tr><th>问题</th><th>风险等级</th><th>说明</th></tr></thead><tbody>
-<tr><td>代码明文暴露</td><td>中</td><td>任何人访问 Gitee 仓库都能看到完整源码逻辑</td></tr>
+<tr><td>代码明文暴露</td><td>中</td><td>任何人访问 GitHub 仓库都能看到完整源码逻辑</td></tr>
 <tr><td>下载体积大</td><td>低</td><td>Python 源码未压缩，<code>wifi_manager.py</code> 26KB、<code>web_pages.py</code> 25KB</td></tr>
 <tr><td>启动速度慢</td><td>低</td><td>MicroPython 运行时需编译 <code>.py</code> 为字节码，占用 CPU 和内存</td></tr>
 </tbody></table>
@@ -525,7 +525,7 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
 <tr><td>内存占用</td><td>高（编译需临时内存）</td><td>低（直接执行）</td><td>中（解压需临时缓冲）</td></tr>
 <tr><td>MicroPython 版本耦合</td><td>❌ 无</td><td>⚠️ <code>.mpy</code> 必须匹配设备 MPY 版本</td><td>⚠️ 同左</td></tr>
 <tr><td>实现复杂度</td><td>低</td><td>中</td><td>中高</td></tr>
-<tr><td>Gitee 托管</td><td>直接 Raw 下载</td><td>直接 Raw 下载</td><td>直接 Raw 下载</td></tr>
+<tr><td>GitHub 托管</td><td>直接 Raw 下载</td><td>直接 Raw 下载</td><td>直接 Raw 下载</td></tr>
 </tbody></table>
 <h3 id="16.3-选择-.mpy-字节码托管">16.3 选择 .mpy 字节码托管</h3>
 <p>理由：</p>
@@ -554,7 +554,7 @@ OTA_MAX_REDIRECTS = const(3)</code></pre>
       &quot;name&quot;: &quot;wifi_manager.mpy&quot;,
       &quot;hash&quot;: &quot;a1b2c3d4&quot;,
       &quot;size&quot;: 8200,
-      &quot;url&quot;: &quot;https://gitee.com/user/esp32-power/raw/v1.9.0/wifi_manager.mpy&quot;
+      &quot;url&quot;: &quot;https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v1.9.0/wifi_manager.mpy&quot;
     }
   ]
 }</code></pre>
@@ -580,11 +580,11 @@ done
 # 3. 生成 version.json（含 .mpy 哈希和 mpy_version）
 python3 scripts/gen_version_json.py --mpy --version 1.9.0 \
   --mpy-version v1.28 --min-version 1.8.0 \
-  --gitee-user user --gitee-repo esp32-power
+  --github-owner MENGEN4J --github-repo esp32c3-power
 
-# 4. 推送 .mpy 文件和 version.json 到 Gitee</code></pre>
-<h3 id="16.9-gitee-仓库目录结构变更">16.9 Gitee 仓库目录结构变更</h3>
-<pre><code>esp32-power/                        ← Gitee 仓库
+# 4. 推送 .mpy 文件和 version.json 到 GitHub</code></pre>
+<h3 id="16.9-github-仓库目录结构变更">16.9 GitHub 仓库目录结构变更</h3>
+<pre><code>esp32c3-power/                        ← GitHub 仓库
 ├── releases/
 │   └── latest/
 │       └── version.json            ← 永远指向最新版本（含 mpy_version）
@@ -611,7 +611,7 @@ python3 scripts/gen_version_json.py --mpy --version 1.9.0 \
 <table>
 <thead><tr><th>限制</th><th>说明</th><th>应对</th></tr></thead><tbody>
 <tr><td>无法更新 MicroPython 运行时</td><td>文件级 OTA 只能替换 .py/.mpy 文件</td><td>运行时更新仍需 USB 烧录</td></tr>
-<tr><td>Gitee Raw 可能有频率限制</td><td>频繁请求可能被限流</td><td>每次配网仅检查 1 次</td></tr>
+<tr><td>GitHub Raw 可能有频率限制</td><td>频繁请求可能被限流</td><td>每次配网仅检查 1 次</td></tr>
 <tr><td>WiFi 密码明文存储</td><td>已知限制（v1.8.0 及之前）</td><td>配网模式短暂开放，可接受</td></tr>
 <tr><td>OTA 无加密校验</td><td>仅 CRC32 完整性校验，无签名验证</td><td>模拟器场景可接受</td></tr>
 <tr><td>跨大版本不支持 OTA</td><td>min_version 限制</td><td>提示用户 USB 升级</td></tr>
@@ -630,7 +630,7 @@ python3 scripts/gen_version_json.py --mpy --version 1.9.0 \
 <tr><td>自动回滚</td><td>更新后 __import__ 失败</td><td>boot.py 自动从 .bak 回滚</td></tr>
 <tr><td>回滚成功</td><td>回滚后正常启动</td><td>旧版本正常运行，.bak 已清理</td></tr>
 <tr><td>WiFi 超时</td><td>更新中 WiFi 超时</td><td>更新时暂停计时器，完成后恢复</td></tr>
-<tr><td>Gitee 不可达</td><td>断网测试</td><td>10 秒超时，正常功能不受影响</td></tr>
+<tr><td>GitHub 不可达</td><td>断网测试</td><td>10 秒超时，正常功能不受影响</td></tr>
 <tr><td>内存监控</td><td>gc.mem_free() 日志</td><td>OTA 期间可用堆 &gt; 50KB</td></tr>
 <tr><td>Socket 泄漏</td><td>多次更新后检查</td><td>socket 及时关闭，无泄漏</td></tr>
 </tbody></table></article>

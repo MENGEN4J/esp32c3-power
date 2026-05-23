@@ -158,7 +158,7 @@ FIRMWARE_VERSION = "2.0.1"
 MPY_VERSION = "v1.28"
 
 # ---- OTA 固件更新 ----
-OTA_VERSION_URL = "https://gitee.com/mengen4jv/esp32-power/raw/main/releases/latest/version.json"
+OTA_VERSION_URL = "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/main/releases/latest/version.json"
 OTA_PENDING_FLAG = ".update_pending"
 OTA_VERSION_FILE = "ota_version.json"
 OTA_BACKUP_SUFFIX = ".bak"

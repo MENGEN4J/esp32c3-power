@@ -1,6 +1,6 @@
 # 标准发版模板
 
-> 适用于本仓库后续所有版本发布。原则是：`commit` 写简短标题，详细内容写到 `CHANGELOG` 和 Gitee Release 说明。
+> 适用于本仓库后续所有版本发布。原则是：`commit` 写简短标题，详细内容写到 `CHANGELOG` 和 GitHub Release 说明。
 
 ---
 
@@ -10,7 +10,7 @@
 
 1. 先更新版本号、日期、分支和附件清单
 2. 填写 `CHANGELOG.md` 中当前版本条目
-3. 填写 Gitee Release 标题和说明，必须包含固定章节，不能只写简短摘要
+3. 填写 GitHub Release 标题和说明，必须包含固定章节，不能只写简短摘要
 4. 上传发版附件，至少包含 `target/firmware.bin`
 5. 补充测试结果、已知限制和未验证项
 
@@ -25,9 +25,9 @@
 
 - [ ] 当前代码已合并到 `main`
 - [ ] 版本号已按 SemVer 更新：`vMAJOR.MINOR.PATCH`
-- [ ] `commit message`、`git tag`、Gitee Release 版本号一致
+- [ ] `commit message`、`git tag`、GitHub Release 版本号一致
 - [ ] 已更新 `CHANGELOG.md`
-- [ ] 已准备 Gitee Release 说明，包含版本概览、本版重点、详细变更、测试报告、下载文件说明、使用说明、兼容性说明、已知限制、回滚说明、附件清单
+- [ ] 已准备 GitHub Release 说明，包含版本概览、本版重点、详细变更、测试报告、下载文件说明、使用说明、兼容性说明、已知限制、回滚说明、附件清单
 - [ ] 已确认附件包含 `target/firmware.bin`
 - [ ] 已确认附件包含 `v<版本号>-ota.zip` 和 `releases/latest/version.json`
 - [ ] 已生成或更新 `releases/latest/version.json`
@@ -159,7 +159,7 @@ Model: GPT-5.4
 
 ---
 
-## 五、Gitee Release 模板
+## 五、GitHub Release 模板
 
 下面模板面向下载用户，内容要比 `CHANGELOG` 更偏“我该下载什么、怎么用、有什么风险”。
 

@@ -15,7 +15,7 @@
 | `current_version` | property (str) | 当前固件版本号，优先读取 ota_version.json，回退到 config.FIRMWARE_VERSION |
 | `check_result` | property (dict/None) | 最近一次版本检查结果，如 `{'has_update': True, 'version': '1.9.0', ...}` |
 | `download_state` | property (dict/None) | 当前下载状态，如 `{'status': 'downloading', 'completed': 2, 'total': 5, 'downloaded_bytes': 10240, 'total_bytes': 40960, ...}` |
-| `check_update()` | method | 从 Gitee 获取 version.json，校验版本号和 mpy_version，返回检查结果 dict |
+| `check_update()` | method | 从 GitHub 获取 version.json，校验版本号和 mpy_version，返回检查结果 dict |
 | `start_download()` | method | 逐文件下载 .mpy → CRC32 校验 → 原子替换 → 设置 .update_pending → machine.reset() |
 
 ### 静态方法
@@ -118,7 +118,7 @@ THEN:
 WHEN: boot.py 执行 `_check_ota_integrity()`
 
 THEN:
-- 逐个 `__import__` 9 个核心模块（MicroPython 自动优先加载 .mpy）
+- 逐个 `__import__` 10 个核心模块（MicroPython 自动优先加载 .mpy）
 - 全部通过：删除 `.bak` 文件 + 删除与 .mpy 同名的旧 .py + 删除 `.update_pending` 标志
 - 任一失败：将 `.bak` 还原为原文件名 + 删除所有 `.mpy` 文件 + 删除 `.update_pending` 和 `ota_version.json`
 
@@ -175,5 +175,5 @@ THEN:
 - mpy-cross 编译 .py → .mpy 字节码
 - 计算 .mpy 文件 CRC32 哈希和大小
 - 生成 version.json（含 mpy_version 字段）
-- .mpy 文件推送到 Gitee 仓库 `releases/ota/v{version}/` 目录
+- .mpy 文件推送到 GitHub 仓库 `releases/ota/v{version}/` 目录
 - version.json 推送到 releases/latest/ 目录

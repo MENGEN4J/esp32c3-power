@@ -68,7 +68,7 @@ freeze(&quot;$(MPY_DIR)/..&quot;, &quot;web_pages.py&quot;)
 freeze(&quot;$(MPY_DIR)/..&quot;, &quot;ota_updater.py&quot;)
 freeze(&quot;$(MPY_DIR)/..&quot;, &quot;app.py&quot;)</code></pre>
 <blockquote>
-<p>⚠️ <code>$(MPY_DIR)/..</code> 已经是项目根目录，不要再加 <code>esp32-power</code>。</p>
+<p>⚠️ <code>$(MPY_DIR)/..</code> 已经是项目根目录，不要再加 <code>esp32c3-power</code>。</p>
 </blockquote>
 <p>---</p>
 <h2 id="3.-环境准备（手动步骤）">3. 环境准备（手动步骤）</h2>
@@ -96,7 +96,7 @@ cd esp-idf &amp;&amp; git submodule update --init --recursive --depth 1
 cd micropython &amp;&amp; make -C mpy-cross
 cd ports/esp32
 make BOARD=ESP32_GENERIC_C3 submodules
-make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32-power/scripts/manifest.py -j$(nproc)</code></pre>
+make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32c3-power/scripts/manifest.py -j$(nproc)</code></pre>
 <blockquote>
 <p>⚠️ <code>make submodules</code> 必须指定 <code>BOARD=ESP32_GENERIC_C3</code>，否则默认使用 ESP32（Xtensa）会编译失败。</p>
 </blockquote>

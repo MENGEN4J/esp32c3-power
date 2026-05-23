@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- **GitHub OTA 源切换**：`config.OTA_VERSION_URL` 改为 GitHub Raw 稳定入口，`releases/latest/version.json` 中当前 v2.0.1 OTA 文件 URL 同步改为 GitHub tag raw 路径
+- **GitHub OTA 打包脚本**：`scripts/gen_version_json.py` 改用 `--github-owner/--github-repo` 生成 GitHub Raw URL
+- **GitHub Release 发布脚本**：新增 `scripts/create_github_release.py`，替换旧 Gitee Release API 脚本，支持创建/更新 Release、刷新同名附件并上传 `firmware.bin`、OTA zip 和 `version.json`
+- **发版文档同步**：README、OTA 规格、发版模板、固件构建文档和 HTML 讲义同步 GitHub 发布流程
+
+### 测试报告
+
+| 测试项 | 验证方法 | 结果 |
+|--------|---------|------|
+| Python 语法检查 | `python3 -m py_compile scripts/gen_version_json.py scripts/create_github_release.py scripts/manifest.py config.py ota_updater.py` | ✅ 通过 |
+| Shell 语法检查 | `bash -n scripts/build_firmware.sh scripts/deploy.sh test/test_runner.sh` | ✅ 通过 |
+| 脚本帮助检查 | `python3 scripts/gen_version_json.py --help` | ✅ 通过 |
+| HTML 解析 | Python `HTMLParser` 解析 GitHub 适配相关 HTML 文档 | ✅ 通过 |
+| Entropy 扫描 | `python3 scripts/entropy_scan.py` | ✅ 通过 |
+
 ## v2.0.1 Release (2026-05-23)
 
 - **事件驱动架构**：新增 `event_bus.py` 轻量事件总线，支持发布/订阅模式，10 种事件常量，零 uasyncio 依赖

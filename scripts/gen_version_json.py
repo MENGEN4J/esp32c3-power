@@ -3,15 +3,16 @@
 OTA 发版脚本：编译 .mpy + 生成 version.json
 
 用法:
-  python3 scripts/gen_version_json.py --version 1.9.0 --min-version 1.8.0 \
-    --mpy-version v1.28 --gitee-user user --gitee-repo esp32-power
+  python3 scripts/gen_version_json.py --version 2.0.2 --min-version 1.8.0 \
+    --mpy-version v1.28 --github-owner MENGEN4J --github-repo esp32c3-power
 
 选项:
   --version       目标版本号 (必填)
   --min-version   最低可升级版本 (默认 1.8.0)
   --mpy-version   MicroPython 版本 (默认 v1.28)
-  --gitee-user    Gitee 用户名 (必填)
-  --gitee-repo    Gitee 仓库名 (默认 esp32-power)
+  --github-owner  GitHub 用户名或组织名 (默认 MENGEN4J)
+  --github-repo   GitHub 仓库名 (默认 esp32c3-power)
+  --raw-base-url  GitHub Raw 基础地址 (默认 raw.githubusercontent.com)
   --mpy-cross     mpy-cross 路径 (默认自动查找)
   --output-dir    version.json 输出目录 (默认 releases/latest)
   --files         要包含的文件列表 (默认自动检测变更)
@@ -21,7 +22,6 @@ import argparse
 import binascii
 import json
 import os
-import shutil
 import subprocess
 import sys
 
@@ -77,14 +77,16 @@ def main():
     parser.add_argument('--version', required=True, help='目标版本号')
     parser.add_argument('--min-version', default='1.8.0', help='最低可升级版本')
     parser.add_argument('--mpy-version', default='v1.28', help='MicroPython 版本')
-    parser.add_argument('--gitee-user', required=True, help='Gitee 用户名')
-    parser.add_argument('--gitee-repo', default='esp32-power', help='Gitee 仓库名')
+    parser.add_argument('--github-owner', default='MENGEN4J', help='GitHub 用户名或组织名')
+    parser.add_argument('--github-repo', default='esp32c3-power', help='GitHub 仓库名')
+    parser.add_argument('--raw-base-url', default=None, help='Raw 文件基础地址')
     parser.add_argument('--mpy-cross', default=None, help='mpy-cross 路径')
     parser.add_argument('--output-dir', default=None, help='输出目录')
     parser.add_argument('--files', nargs='*', default=None, help='要包含的文件')
     args = parser.parse_args()
 
-    version_tag = 'v' + args.version
+    version = args.version[1:] if args.version.startswith('v') else args.version
+    version_tag = 'v' + version
     version_dir = os.path.join('releases', 'ota', version_tag)
     output_dir = args.output_dir or os.path.join('releases', 'latest')
 
@@ -100,7 +102,7 @@ def main():
     files_to_process = args.files or BIZ_MODULES
 
     version_json = {
-        'version': args.version,
+        'version': version,
         'min_version': args.min_version,
         'mpy_version': args.mpy_version,
         'changelog': '',
@@ -119,15 +121,18 @@ def main():
         mpy_name = os.path.basename(mpy_path)
         file_hash = crc32_file(mpy_path)
         file_size = os.path.getsize(mpy_path)
-        gitee_url = 'https://gitee.com/%s/%s/raw/v%s/releases/ota/v%s/%s' % (
-            args.gitee_user, args.gitee_repo, args.version, args.version, mpy_name
+        raw_base_url = args.raw_base_url or 'https://raw.githubusercontent.com/%s/%s' % (
+            args.github_owner, args.github_repo
+        )
+        file_url = '%s/%s/releases/ota/%s/%s' % (
+            raw_base_url.rstrip('/'), version_tag, version_tag, mpy_name
         )
 
         version_json['files'].append({
             'name': mpy_name,
             'hash': file_hash,
             'size': file_size,
-            'url': gitee_url
+            'url': file_url
         })
 
         src_size = os.path.getsize(py_file)
@@ -150,8 +155,8 @@ def main():
     print()
     print("下一步:")
     print("  1. git add %s/ %s" % (version_dir, output_dir))
-    print("  2. git commit -m \"release: v%s\"" % args.version)
-    print("  3. git tag v%s" % args.version)
+    print("  2. git commit -m \"release: v%s\"" % version)
+    print("  3. git tag v%s" % version)
     print("  4. git push origin main --tags")
 
 

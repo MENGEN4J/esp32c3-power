@@ -107,7 +107,7 @@
 - 配网完成或超时后自动重启恢复蓝牙
 
 ### 8. OTA 固件更新
-- 配网连接家庭 WiFi 后自动检查 Gitee 上的新版本
+- 配网连接家庭 WiFi 后自动检查 GitHub 上的新版本
 - 版本清单固定读取稳定入口 `releases/latest/version.json`，避免旧版本设备被历史 tag 固定住
 - 发现新版本时配置页面显示绿色更新横幅
 - 一键更新：点击「立即更新」→ 逐文件下载 .mpy 字节码 → CRC32 校验 → 原子替换
@@ -231,7 +231,7 @@ Cadence = (Δ转数 × 60 × 1024) / Δ时间(1/1024秒)
    - 在配置页面点击「一键配网」
    - 选择家庭 WiFi 并输入密码
 3. **检查更新**
-   - 连接成功后设备自动检查 Gitee 上的新版本
+   - 连接成功后设备自动检查 GitHub 上的新版本
    - 配置页面显示更新状态横幅
 4. **执行更新**
    - 如有新版本，点击「立即更新」
@@ -329,7 +329,7 @@ OTA_DOWNLOAD_CHUNK = const(512)             # OTA 下载缓冲区大小（字节
 ## 📁 文件结构
 
 ```
-esp32-power/
+esp32c3-power/
 ├── AGENTS.md            — 跨 AI 工具的最小入口规则
 ├── boot.py              — 硬件初始化（gc/freq）+ OTA 校验回滚 + 部署模式 + 主程序入口
 ├── app.py               — 主程序，按钮事件循环 + WiFi 触发
@@ -374,6 +374,7 @@ esp32-power/
 │   ├── flash_firmware.sh — 固件烧录脚本
 │   ├── manifest.py      — MicroPython 冻结模块清单
 │   ├── gen_version_json.py — OTA 发版脚本（mpy-cross 编译 + version.json 生成）
+│   ├── create_github_release.py — GitHub Release 创建与附件上传脚本
 │   ├── entropy_scan.py  — Entropy 治理自动化扫描脚本
 │   └── capture_screenshots.py — 网页截图辅助脚本
 ├── test/

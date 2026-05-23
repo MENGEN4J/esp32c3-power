@@ -17,7 +17,7 @@ HTML 学习版入口：[html/index.html](html/index.html)
 |------|------|----------|
 | [firmware-build.md](firmware-build.md) | MicroPython 固件编译、冻结模块、烧录 | 开发者、发版人员 |
 | [robot-deploy.md](robot-deploy.md) | 自动部署脚本、异常处理、监控页面 | AI Agent、开发者 |
-| [release-template.md](release-template.md) | CHANGELOG 与 Gitee Release 填空模板 | 发版人员 |
+| [release-template.md](release-template.md) | CHANGELOG 与 GitHub Release 填空模板 | 发版人员 |
 
 ## 三、架构与专项设计
 

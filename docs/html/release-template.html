@@ -29,11 +29,11 @@
 </div>
 </aside>
 <main class="main">
-<section class="hero"><h1>标准发版模板</h1><p>发布前检查、CHANGELOG 和 Gitee Release 填空模板。</p></section>
-<div class="toc"><strong>本页目录</strong><a href="#一、使用方式">一、使用方式</a><a href="#二、发版前检查清单">二、发版前检查清单</a><a href="#发版前检查">发版前检查</a><a href="#三、commit-模板">三、Commit 模板</a><a href="#四、changelog-模板">四、CHANGELOG 模板</a><a href="#v&lt;版本号&gt;-&lt;版本类型&gt;-(&lt;发布日期&gt;)">v&lt;版本号&gt; &lt;版本类型&gt; (&lt;发布日期&gt;)</a><a href="#五、gitee-release-模板">五、Gitee Release 模板</a><a href="#版本概览">版本概览</a><a href="#本版重点">本版重点</a><a href="#修改详情">修改详情</a><a href="#改进点">改进点</a><a href="#bug-修复">Bug 修复</a><a href="#测试结论">测试结论</a><a href="#下载文件说明">下载文件说明</a><a href="#使用说明">使用说明</a><a href="#兼容性说明">兼容性说明</a><a href="#已知限制">已知限制</a><a href="#风险提示">风险提示</a><a href="#回滚说明">回滚说明</a><a href="#附件清单">附件清单</a><a href="#六、推荐补充信息">六、推荐补充信息</a><a href="#七、最小合规填空版">七、最小合规填空版</a><a href="#版本概览">版本概览</a><a href="#本版重点">本版重点</a><a href="#bug-修复">Bug 修复</a><a href="#详细变更">详细变更</a><a href="#测试报告">测试报告</a><a href="#下载文件说明">下载文件说明</a><a href="#使用说明">使用说明</a><a href="#已知限制">已知限制</a><a href="#回滚说明">回滚说明</a><a href="#附件清单">附件清单</a></div>
+<section class="hero"><h1>标准发版模板</h1><p>发布前检查、CHANGELOG 和 GitHub Release 填空模板。</p></section>
+<div class="toc"><strong>本页目录</strong><a href="#一、使用方式">一、使用方式</a><a href="#二、发版前检查清单">二、发版前检查清单</a><a href="#发版前检查">发版前检查</a><a href="#三、commit-模板">三、Commit 模板</a><a href="#四、changelog-模板">四、CHANGELOG 模板</a><a href="#v&lt;版本号&gt;-&lt;版本类型&gt;-(&lt;发布日期&gt;)">v&lt;版本号&gt; &lt;版本类型&gt; (&lt;发布日期&gt;)</a><a href="#五、github-release-模板">五、GitHub Release 模板</a><a href="#版本概览">版本概览</a><a href="#本版重点">本版重点</a><a href="#修改详情">修改详情</a><a href="#改进点">改进点</a><a href="#bug-修复">Bug 修复</a><a href="#测试结论">测试结论</a><a href="#下载文件说明">下载文件说明</a><a href="#使用说明">使用说明</a><a href="#兼容性说明">兼容性说明</a><a href="#已知限制">已知限制</a><a href="#风险提示">风险提示</a><a href="#回滚说明">回滚说明</a><a href="#附件清单">附件清单</a><a href="#六、推荐补充信息">六、推荐补充信息</a><a href="#七、最小合规填空版">七、最小合规填空版</a><a href="#版本概览">版本概览</a><a href="#本版重点">本版重点</a><a href="#bug-修复">Bug 修复</a><a href="#详细变更">详细变更</a><a href="#测试报告">测试报告</a><a href="#下载文件说明">下载文件说明</a><a href="#使用说明">使用说明</a><a href="#已知限制">已知限制</a><a href="#回滚说明">回滚说明</a><a href="#附件清单">附件清单</a></div>
 <article class="content"><h1 id="标准发版模板">标准发版模板</h1>
 <blockquote>
-<p>适用于本仓库后续所有版本发布。原则是：<code>commit</code> 写简短标题，详细内容写到 <code>CHANGELOG</code> 和 Gitee Release 说明。</p>
+<p>适用于本仓库后续所有版本发布。原则是：<code>commit</code> 写简短标题，详细内容写到 <code>CHANGELOG</code> 和 GitHub Release 说明。</p>
 </blockquote>
 <p>---</p>
 <h2 id="一、使用方式">一、使用方式</h2>
@@ -41,7 +41,7 @@
 <ol>
 <li>先更新版本号、日期、分支和附件清单</li>
 <li>填写 <code>CHANGELOG.md</code> 中当前版本条目</li>
-<li>填写 Gitee Release 标题和说明，必须包含固定章节，不能只写简短摘要</li>
+<li>填写 GitHub Release 标题和说明，必须包含固定章节，不能只写简短摘要</li>
 <li>上传发版附件，至少包含 <code>target/firmware.bin</code></li>
 <li>补充测试结果、已知限制和未验证项</li>
 </ol>
@@ -52,9 +52,9 @@
 
 - [ ] 当前代码已合并到 `main`
 - [ ] 版本号已按 SemVer 更新：`vMAJOR.MINOR.PATCH`
-- [ ] `commit message`、`git tag`、Gitee Release 版本号一致
+- [ ] `commit message`、`git tag`、GitHub Release 版本号一致
 - [ ] 已更新 `CHANGELOG.md`
-- [ ] 已准备 Gitee Release 说明，包含版本概览、本版重点、详细变更、测试报告、下载文件说明、使用说明、兼容性说明、已知限制、回滚说明、附件清单
+- [ ] 已准备 GitHub Release 说明，包含版本概览、本版重点、详细变更、测试报告、下载文件说明、使用说明、兼容性说明、已知限制、回滚说明、附件清单
 - [ ] 已确认附件包含 `target/firmware.bin`
 - [ ] 已确认附件包含 `v&lt;版本号&gt;-ota.zip` 和 `releases/latest/version.json`
 - [ ] 已生成或更新 `releases/latest/version.json`
@@ -162,7 +162,7 @@ Model: GPT-5.4</code></pre>
 - 若当前设备存在 `&lt;旧字段/旧配置格式&gt;`，请优先关注兼容性说明
 - 升级关键设备前建议先备份当前配置</code></pre>
 <p>---</p>
-<h2 id="五、gitee-release-模板">五、Gitee Release 模板</h2>
+<h2 id="五、github-release-模板">五、GitHub Release 模板</h2>
 <p>下面模板面向下载用户，内容要比 <code>CHANGELOG</code> 更偏“我该下载什么、怎么用、有什么风险”。</p>
 <p>强制要求：</p>
 <ul>

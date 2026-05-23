@@ -47,7 +47,7 @@ freeze("$(MPY_DIR)/..", "ota_updater.py")
 freeze("$(MPY_DIR)/..", "app.py")
 ```
 
-> ⚠️ `$(MPY_DIR)/..` 已经是项目根目录，不要再加 `esp32-power`。
+> ⚠️ `$(MPY_DIR)/..` 已经是项目根目录，不要再加 `esp32c3-power`。
 
 ---
 
@@ -95,7 +95,7 @@ source /path/to/esp-idf/export.sh
 cd micropython && make -C mpy-cross
 cd ports/esp32
 make BOARD=ESP32_GENERIC_C3 submodules
-make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32-power/scripts/manifest.py -j$(nproc)
+make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32c3-power/scripts/manifest.py -j$(nproc)
 ```
 
 > ⚠️ `make submodules` 必须指定 `BOARD=ESP32_GENERIC_C3`，否则默认使用 ESP32（Xtensa）会编译失败。

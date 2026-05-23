@@ -3,7 +3,7 @@ BikePower 自定义 MicroPython 固件 manifest
 将项目 Python 模块冻结（freeze）到固件中
 
 用法:
-  make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32-power/manifest.py
+  make BOARD=ESP32_GENERIC_C3 FROZEN_MANIFEST=/path/to/esp32c3-power/manifest.py
 
 冻结模块的优势:
   - 代码预编译为字节码，启动更快
