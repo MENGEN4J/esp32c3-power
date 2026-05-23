@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "min_version": "1.8.0",
   "mpy_version": "v1.28",
   "changelog": "",
@@ -8,61 +8,61 @@
       "name": "app.mpy",
       "hash": "ed1f7165",
       "size": 2916,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/app.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/app.mpy"
     },
     {
       "name": "config.mpy",
-      "hash": "517617e3",
-      "size": 3453,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/config.mpy"
+      "hash": "e457b52d",
+      "size": 3466,
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/config.mpy"
     },
     {
       "name": "logger.mpy",
       "hash": "a4970100",
       "size": 501,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/logger.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/logger.mpy"
     },
     {
       "name": "utils.mpy",
       "hash": "449b6d76",
       "size": 178,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/utils.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/utils.mpy"
     },
     {
       "name": "ble_service.mpy",
       "hash": "c8da5046",
       "size": 6909,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/ble_service.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/ble_service.mpy"
     },
     {
       "name": "power_data.mpy",
       "hash": "4d4e16f1",
       "size": 6792,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/power_data.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/power_data.mpy"
     },
     {
       "name": "wifi_manager.mpy",
       "hash": "270a9454",
       "size": 12524,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/wifi_manager.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/wifi_manager.mpy"
     },
     {
       "name": "web_pages.mpy",
       "hash": "4cf301f5",
       "size": 30849,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/web_pages.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/web_pages.mpy"
     },
     {
       "name": "ota_updater.mpy",
       "hash": "ad25abf6",
       "size": 7258,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/ota_updater.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/ota_updater.mpy"
     },
     {
       "name": "event_bus.mpy",
       "hash": "e831b670",
       "size": 881,
-      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.1/releases/ota/v2.0.1/event_bus.mpy"
+      "url": "https://raw.githubusercontent.com/MENGEN4J/esp32c3-power/v2.0.2/releases/ota/v2.0.2/event_bus.mpy"
     }
   ]
 }

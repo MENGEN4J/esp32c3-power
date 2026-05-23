@@ -154,7 +154,7 @@ DEVICE_MANUFACTURER = "BikePower"
 DEVICE_MODEL = "ESP32-C3"
 
 # ---- 固件版本 ----
-FIRMWARE_VERSION = "2.0.1"
+FIRMWARE_VERSION = "2.0.2"
 MPY_VERSION = "v1.28"
 
 # ---- OTA 固件更新 ----
